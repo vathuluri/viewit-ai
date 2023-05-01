@@ -183,6 +183,7 @@ sqlparse==0.4.3
 stack-data==0.6.2
 statsmodels==0.13.5
 streamlit==1.21.0
+streamlit_chat==0.0.2.2
 sympy==1.11.1
 tenacity==8.2.2
 tensorboard-data-server==0.7.0
