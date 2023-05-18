@@ -58,8 +58,8 @@ pyasn1-modules==0.2.8
 pydantic==1.10.7
 pydeck==0.8.1b0
 Pympler==1.0.1
-pyparsing==3.0.9pytz==2022.7.1
-pytz-deprecation-shim==0.1.0.post0
+pyparsing==3.0.9
+pytz==2022.7.1
 pywin32==305.1
 PyYAML==6.0
 regex==2022.10.31
