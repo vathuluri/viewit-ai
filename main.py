@@ -11,7 +11,6 @@ df = pd.read_csv('processed/embeddings.csv', index_col=0)
 df['embeddings'] = df['embeddings'].apply(eval).apply(np.array)
 
 # ViewIt OpenAI API key
-# openai.api_key = "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"
 openai.api_key = st.secrets['api_key']
 # openai.api_key = api_key
 
