@@ -1,6 +1,6 @@
 import openai
 from openai.embeddings_utils import distances_from_embeddings
-# from creds import api_key
+# import os
 import pandas as pd
 import numpy as np
 from streamlit_chat import message
@@ -11,8 +11,9 @@ df = pd.read_csv('processed/embeddings.csv', index_col=0)
 df['embeddings'] = df['embeddings'].apply(eval).apply(np.array)
 
 # ViewIt OpenAI API key
+openai.organization = st.secrets['org']
 openai.api_key = st.secrets['api_key']
-# openai.api_key = api_key
+# openai.api_key = os.environ['OPENAI_API_KEY']
 
 def create_context(question, df, maxlen=1800, size="ada"):
     '''

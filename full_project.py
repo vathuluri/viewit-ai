@@ -8,7 +8,6 @@ from html.parser import HTMLParser
 from urllib.parse import urlparse
 import os
 import openai
-from creds import api_key
 
 
 # Regex pattern to match a URL
@@ -253,7 +252,7 @@ df['n_tokens'] = df.text.apply(lambda x: len(tokenizer.encode(x)))
 # ### Create Embeddings
 
 #viewit api key
-openai.api_key = api_key
+openai.api_key = os.environ['OPENAI_API_KEY']
 
 
 df['embeddings'] = df.text.apply(
