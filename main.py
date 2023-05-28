@@ -5,6 +5,9 @@ import numpy as np
 from streamlit_chat import message
 import streamlit as st
 
+# for key in st.session_state.keys():
+#     del st.session_state[key]
+
 # read the already created embeddings csv
 df = pd.read_csv('processed/embeddings.csv', index_col=0)
 df['embeddings'] = df['embeddings'].apply(eval).apply(np.array)
@@ -48,16 +51,20 @@ def create_context(question, df, maxlen=1800, size="ada"):
     return '\n\n###\n\n'.join(returns)
 
 
-def submit():
-    st.session_state.input = st.session_state.widget
+if 'user_input' not in st.session_state:
+    st.session_state['user_input'] = ''
+
+
+def clear():
+    st.session_state.user_input = st.session_state.widget
     st.session_state.widget = ''
 
 
-def get_input():
-    input_text = st.text_input("Ask a question: ", key='widget', value="Hi",
-                               placeholder='Ask a question...', on_change=submit)
-    return input_text
-
+# def get_input():
+#     user_input = st.text_input("Ask a question: ", key='widget',
+#                                placeholder='Ask a question...', on_change=clear)
+#     return user_input
+st.text_input("Ask a question: ", key='widget', placeholder='Ask a question...', on_change=clear)
 
 def generate_response(
         df=df,
@@ -130,13 +137,9 @@ if 'generated' not in st.session_state:
 if 'past' not in st.session_state:
     st.session_state['past'] = []
 
-if 'input' not in st.session_state:
-    st.session_state.input = ''
 
-
-st.write(f'Last submission: {st.session_state.input}')
-
-user_input = get_input()
+# user_input = get_input()
+user_input = st.session_state.user_input
 
 # Generate a response if input exists
 if user_input:
