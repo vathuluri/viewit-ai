@@ -1,6 +1,5 @@
 import openai
 from openai.embeddings_utils import distances_from_embeddings
-# from creds import api_key
 import pandas as pd
 import numpy as np
 from streamlit_chat import message
@@ -15,16 +14,19 @@ openai.organization = st.secrets['org']
 openai.api_key = st.secrets['api_key']
 # openai.api_key = api_key
 
+
 def create_context(question, df, maxlen=1800, size="ada"):
     '''
     Create a context for a question by finding the most similar context from the DataFrame
     '''
 
     # Get embeddings for question
-    q_embeddings = openai.Embedding.create(input=question, engine="text-embedding-ada-002")['data'][0]['embedding']
+    q_embeddings = openai.Embedding.create(
+        input=question, engine="text-embedding-ada-002")['data'][0]['embedding']
 
     # Get distance from embeddings
-    df['distances'] = distances_from_embeddings(q_embeddings, df['embeddings'].values, distance_metric='cosine')
+    df['distances'] = distances_from_embeddings(
+        q_embeddings, df['embeddings'].values, distance_metric='cosine')
 
     returns = []
     cur_len = 0
@@ -46,21 +48,26 @@ def create_context(question, df, maxlen=1800, size="ada"):
     return '\n\n###\n\n'.join(returns)
 
 
+def submit():
+    st.session_state.input = st.session_state.widget
+    st.session_state.widget = ''
+
+
 def get_input():
-    input_text = st.text_input("Ask a question: ", key='input', value="Hi",
-                               placeholder='Ask a question...')
+    input_text = st.text_input("Ask a question: ", key='widget', value="Hi",
+                               placeholder='Ask a question...', on_change=submit)
     return input_text
 
 
 def generate_response(
         df=df,
-        model= "text-davinci-003",
-        question = "Hi, please introduce yourself", # This is the default question
-        max_len = 1800,
-        size = 'ada',
-        debug = False,
-        max_tokens = 500,
-        stop_sequence = None
+        model="text-davinci-003",
+        question="Hi, please introduce yourself",  # This is the default question
+        max_len=1800,
+        size='ada',
+        debug=False,
+        max_tokens=500,
+        stop_sequence=None
 ):
     '''
     Answer a question based on the most similar context from DataFrame texts
@@ -80,7 +87,7 @@ def generate_response(
     try:
         # create Completion using question and context
         response = openai.Completion.create(
-            prompt= f"""You are a virtual property broker for the real estate company 'ViewIt'. Be friendly and welcoming and answer the question based on the context below.
+            prompt=f"""You are a virtual property broker for the real estate company 'ViewIt'. Be friendly and welcoming and answer the question based on the context below.
             
             Context: {context}
             
@@ -100,17 +107,16 @@ def generate_response(
     except Exception as e:
         print(e)
         return ''
-    
 
 
 # App Title
-st.title('ViewIt Chatbot 2.0')
+st.title('ViewIt Chatbot 0.2')
 
 # App Sidebar
 with st.sidebar:
     st.markdown(f"""
                 # About
-                This is version 2 of the Chatbot Assistant that will help you look for your desired properties.
+                This is version 0.2 of the Chatbot Assistant that will help you look for your desired properties.
 
                 
                 # How does it work
@@ -124,11 +130,18 @@ if 'generated' not in st.session_state:
 if 'past' not in st.session_state:
     st.session_state['past'] = []
 
+if 'input' not in st.session_state:
+    st.session_state.input = ''
+
+
+st.write(f'Last submission: {st.session_state.input}')
+
 user_input = get_input()
 
 # Generate a response if input exists
 if user_input:
-    output = str(generate_response(df=df, model='text-davinci-003', question=user_input))
+    output = str(generate_response(
+        df=df, model='text-davinci-003', question=user_input))
 
     # store chat
     st.session_state.past.append(user_input)
