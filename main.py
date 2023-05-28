@@ -128,10 +128,6 @@ with st.sidebar:
                 
                 # How does it work
                 Simply enter your query in the text field and the assistant will help you out.
-                
-                # Debug stuff
-                
-                
                 """)
 
 # storing chat history
