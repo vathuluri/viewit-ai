@@ -94,15 +94,17 @@ def generate_response(
     try:
         # create Completion using question and context
         response = openai.Completion.create(
-            prompt=f"""You are a virtual property broker for the real estate company 'ViewIt'. Be friendly and welcoming and answer the question based on the context below.
+            prompt=f"""You are a virtual property assistant for the real estate company 'ViewIt'.
+            Be friendly and welcoming and answer the question based on the context below.
             
             Context: {context}
             
             ---
             
             Question: {question}
+
             Answer: """,
-            temperature=0,
+            temperature=0.2,
             max_tokens=max_tokens,
             top_p=1,
             frequency_penalty=0,
@@ -126,7 +128,7 @@ with st.sidebar:
                 This is version 0.2 of the Chatbot Assistant that will help you look for your desired properties.
 
                 
-                # How does it work
+                # How to use
                 Simply enter your query in the text field and the assistant will help you out.
                 """)
 
