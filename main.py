@@ -1,11 +1,30 @@
 import openai
-from streamlit_chat import message
 import streamlit as st
-from model import generate_response, df
+import pandas as pd
+import numpy as np
+from streamlit_chat import message
+from model import generate_response
 
 # # Clear Session State Variables
 # for key in st.session_state.keys():
 #     del st.session_state[key]
+
+# read the already created embeddings csv
+@st.cache_data
+def old_data():
+    df = pd.read_csv('processed/embeddings.csv', index_col=0)
+    df['embeddings'] = df['embeddings'].apply(eval).apply(np.array)
+    return df
+
+@st.cache_data
+def data(path='data/pfraw.csv'):
+    df = pd.read_csv(path)
+    return df
+
+df = old_data()
+
+st.set_page_config(page_title="Viewit Property Analyst", page_icon="🤓", 
+                   layout="centered", initial_sidebar_state="expanded")
 
 # ViewIt OpenAI API key
 openai.organization = st.secrets['org']
@@ -13,6 +32,12 @@ openai.api_key = st.secrets['api_key']
 
 if 'user_input' not in st.session_state:
     st.session_state['user_input'] = ''
+
+
+with st.expander("See the data being used"):
+    st.write("Here's a sample of our transaction data")
+    st.write(f"Total rows: {len(df())}")
+    st.dataframe(df.head(10))
 
 
 def clear():
