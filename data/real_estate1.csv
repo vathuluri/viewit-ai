@@ -1,4 +1,4 @@
-Record Date,Record Type,Location,Property Type,Price (AED),Price/sqft (AED),Built-up Area (sqft),Plot Area (sqft),Beds,Maid,Study,Floor Level,Views,Balcony,Developer,Comments,URL
+Record Date,Record Type,Location,Property Type,Price,Price/sqft,Built-up Area,Plot Area,Beds,Has Maid Room,Has Study Room,Floor Level,Views,Has Balcony,Developer,Comments,URL
 15-05-2023,Secondary Transaction,"Azizi Star, Al Furjan",Apartment,430700.0,1080,399,0,Studio,False,False,12,,True,Azizi Developments,"Hotel Apartment, Unit-1222",
 15-05-2023,Secondary Transaction,"Shaista Azizi, Al Furjan",Apartment,399000.0,1003,398,0,Studio,False,False,5,,True,Azizi Developments,Unit-503,
 15-05-2023,Secondary Transaction,"Samia Azizi, Al Furjan",Apartment,690000.0,785,879,0,1 Bed,False,False,,,True,Azizi Developments,Unit-305,
