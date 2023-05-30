@@ -2,10 +2,7 @@ import openai
 import numpy as np
 import pandas as pd
 from openai.embeddings_utils import distances_from_embeddings
-
-# read the already created embeddings csv
-df = pd.read_csv('processed/embeddings.csv', index_col=0)
-df['embeddings'] = df['embeddings'].apply(eval).apply(np.array)
+from main import df
 
 
 def create_context(question, df, maxlen=1800, size="ada"):
