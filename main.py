@@ -1,21 +1,21 @@
-import openai
 import streamlit as st
-import pandas as pd
-import numpy as np
+st.set_page_config(page_title="Viewit Property Analyst", page_icon="📊", 
+                   layout="centered", initial_sidebar_state="auto")
+
+import openai
 from streamlit_chat import message
-from model import generate_response, load_old_data, load_data, get_answer
+from model import load_data, get_answer
+
+
+st.image("https://i.postimg.cc/Nfz5nZ8G/Logo.png", width=200)
 
 # # Clear Session State Variables
 # for key in st.session_state.keys():
 #     del st.session_state[key]
 
 
-
 # df = load_old_data()
 df = load_data()
-
-st.set_page_config(page_title="Viewit Property Analyst", page_icon="🤓", 
-                   layout="centered", initial_sidebar_state="expanded")
 
 # ViewIt OpenAI API key
 openai.organization = st.secrets['org']
@@ -25,21 +25,19 @@ if 'user_input' not in st.session_state:
     st.session_state['user_input'] = ''
 
 
-with st.expander("See the data being used"):
-    st.write("Here's a sample of our transaction data")
-    st.write(f"Total rows: {len(df)}")
-    st.dataframe(df.head(25))
-
-
 def clear():
     st.session_state.user_input = st.session_state.widget
     st.session_state.widget = ''
 
 
-st.image("https://i.postimg.cc/Nfz5nZ8G/Logo.png", width=200)
-
 # App Title
 st.title('ViewIt Chatbot 0.3')
+
+
+with st.expander("See the data being used"):
+    st.write("Here's a sample of our transaction data")
+    st.write(f"Total rows: {len(df)}")
+    st.dataframe(df.head(10))
 
 # App Sidebar
 with st.sidebar:
