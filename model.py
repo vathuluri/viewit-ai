@@ -5,12 +5,12 @@ import pandas as pd
 import streamlit as st
 from langchain.agents import create_pandas_dataframe_agent
 from langchain import OpenAI
-from prompts import SAMPLE_PROMPT_PREFIX
+from prompts import *
 
 
 @st.cache_data
-def load_data(path='data/pfraw.csv'):
-    df = pd.read_csv(path)
+def load_data(filename='pfraw.csv'):
+    df = pd.read_csv(f"data/{filename}")
     return df
 
 
@@ -23,12 +23,26 @@ def load_agent(df, temperature, prompt_prefix=SAMPLE_PROMPT_PREFIX):
     return agent
 
 
-def get_answer(question, df=load_data(), temperature=0.2, prompt_prefix=SAMPLE_PROMPT_PREFIX):
+def get_answer(question, prompt_prefix, df, temperature=0.2):
     agent = load_agent(df=df, temperature=temperature,
                        prompt_prefix=prompt_prefix)
     response = agent.run(question)
     return response
 
+
+prefix_mapping = {
+    'pfraw.csv': SAMPLE_PROMPT_PREFIX,
+    'real_estate1.csv': PROMPT_PREFIX
+}
+
+@st.cache_data
+def df_prefix(filename):
+    df = load_data(filename)
+
+    if filename in prefix_mapping:
+        PREFIX = prefix_mapping[filename]
+
+    return df, PREFIX
 
 # =============== OLD MODEL =============== #
 
