@@ -15,11 +15,6 @@ with col2:
 #     del st.session_state[key]
 
 
-# ViewIt OpenAI API key
-openai.organization = st.secrets['org']
-openai.api_key = st.secrets['api_key']
-
-
 if 'user_input' not in st.session_state:
     st.session_state['user_input'] = ''
 

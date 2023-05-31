@@ -1,3 +1,4 @@
+import openai
 import pandas as pd
 import streamlit as st
 from langchain.agents import create_pandas_dataframe_agent
@@ -5,6 +6,11 @@ from langchain import OpenAI
 from prompts import *
 
 icons = "😎,😶‍🌫️,🤯,👾,🤖,👽,🪶,🦾,🕵️,🤹,✨,👓,🕶️,🔑,🗝️,🩻,📽️,📷,🔍,🔎,💡,📈,📊,📍,📎,🌏,🏙️,🏡,🏠,🏢,🏬,🌇,☢️,☣️".split(',')
+
+# ViewIt OpenAI API key
+openai.organization = st.secrets['org']
+openai.api_key = st.secrets['api_key']
+
 
 @st.cache_data
 def load_data(filename='pfraw.csv'):
