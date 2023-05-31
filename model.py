@@ -22,7 +22,7 @@ def load_data(filename='pfraw.csv'):
 def load_agent(df, temperature, prompt_prefix=SAMPLE_PROMPT_PREFIX):
     '''Loads the langchain datagrame agent for the specified dataframe.'''
 
-    llm = OpenAI(temperature=0.2, model_name='text-davinci-003')
+    llm = OpenAI(temperature=0.2, model_name='text-davinci-003', openai_api_key=st.secrets['api_key'])
     agent = create_pandas_dataframe_agent(llm=llm, df=df, prefix=prompt_prefix)
     return agent
 
