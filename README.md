@@ -1,8 +1,8 @@
-# ViewIt Chatbot_v2
+# ViewIt Chatbot_v0.3
 
-This chatbot uses a different approach for creating embeddings and responses.
+This chatbot now reads tabular data directly, for question answering.
 
-Contains a webscapper to crawl the domain and scrape the data, which is then used to create embeddings and context for the AI model.
+Contains a webcrawler to crawl the domain and scrape the data, which is then used to create embeddings and context for the AI model.
 
 Check the guide on [how to clone a repository.](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)
 
