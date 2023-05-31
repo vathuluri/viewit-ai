@@ -4,6 +4,7 @@ from langchain.agents import create_pandas_dataframe_agent
 from langchain import OpenAI
 from prompts import *
 
+icons = "😎,😶‍🌫️,🤯,👾,🤖,👽,🪶,🦾,🕵️,🤹,✨,👓,🕶️,🔑,🗝️,🩻,📽️,📷,🔍,🔎,💡,📈,📊,📍,📎,🌏,🏙️,🏡,🏠,🏢,🏬,🌇,☢️,☣️".split(',')
 
 @st.cache_data
 def load_data(filename='pfraw.csv'):
