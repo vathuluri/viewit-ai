@@ -1,7 +1,7 @@
 import streamlit as st
 st.set_page_config(page_title="Viewit Property Analyst", page_icon="📊",
                    layout="centered", initial_sidebar_state="auto")
-from model import get_answer, df_prefix
+from model import df_prefix, get_answer
 from streamlit_chat import message
 import openai
 
