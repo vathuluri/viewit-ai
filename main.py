@@ -1,7 +1,6 @@
 import random
 from model import icons, df_prefix, get_answer
 from streamlit_chat import message
-import openai
 import streamlit as st
 st.set_page_config(page_title="Viewit Property Analyst", page_icon=random.choice(icons),
                    layout="centered", initial_sidebar_state="auto")
