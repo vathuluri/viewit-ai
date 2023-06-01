@@ -75,7 +75,7 @@ user_input = st.session_state.user_input
 
 # Generate a response if input exists
 if user_input:
-    print("User: ", user_input)
+    print("\nUser: ", user_input)
     with st.spinner('Thinking...'):
         output = str(get_answer(question=user_input, prompt_prefix=PREFIX, df=df))
         print("Bot: ", output)
