@@ -9,8 +9,10 @@ from prompts import *
 
 
 @st.cache_data
-def load_data(filename='pfraw.csv'):
+def load_data(filename='pfraw.csv') -> pd.DataFrame :
     df = pd.read_csv(f"data/{filename}")
+    if 'Record Date' in df:
+        df['Record Date'] = pd.to_datetime(df['Record Date'])
     return df
 
 
