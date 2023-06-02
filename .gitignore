@@ -2,4 +2,5 @@ test.ipynb
 testapp.py
 oldmodel.py
 newmodel.py
+data/*.xlsx
 __pycache__/
