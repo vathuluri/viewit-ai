@@ -34,16 +34,15 @@ def clear():
 # App Title
 st.title('ViewIt Chatbot 0.3')
 
-datanames = ['real_estate1.csv', 'reidin_data.csv', 'pfraw.csv']
+datanames = ['real_estate1.csv', 'new_reidin_data.csv', 'pfraw.csv']
 
 data_option = st.radio('Choose the data', datanames,
                        key='radio_option', horizontal=True)
 
 if data_option == 'pfraw.csv':
     df, PREFIX = df_prefix('pfraw.csv')
-elif data_option == 'reidin_data.csv':
-    df, PREFIX = df_prefix('reidin_data.csv')
-    # df = df[['']]
+elif data_option == 'new_reidin_data.csv':
+    df, PREFIX = df_prefix('new_reidin_data.csv')
 else:
     df, PREFIX = df_prefix('real_estate1.csv')
 
@@ -99,14 +98,15 @@ else:
 if user_input:
     user_log = f"\nUser [{datetime.now().strftime('%H:%M:%S')}]: " + user_input
     print(user_log)
-    f.write(user_log)
+    f.write('\n'+user_log)
 
     with st.spinner('Thinking...'):
         output = str(get_answer(question=user_input,
                      prompt_prefix=PREFIX, df=df, model=model, temperature=0.3))
         response_log = f"Bot [{datetime.now().strftime('%H:%M:%S')}]: " + output
         print(response_log)
-        f.write(response_log)
+        f.write('\n'+response_log)
+        f.close()
         # store chat
         st.session_state.past.append(user_input)
         st.session_state.generated.append(output)
