@@ -1,5 +1,7 @@
+import os
 import openai
 from streamlit_chat import message
+from datetime import datetime
 from model import get_answer, df_prefix
 import streamlit as st
 st.set_page_config(page_title="Viewit Property Analyst", page_icon="📊",
@@ -32,7 +34,7 @@ def clear():
 # App Title
 st.title('ViewIt Chatbot 0.3')
 
-datanames = ['pfraw.csv', 'real_estate1.csv', 'reidin_data.csv']
+datanames = ['real_estate1.csv', 'reidin_data.csv', 'pfraw.csv']
 
 data_option = st.radio('Choose the data', datanames,
                        key='radio_option', horizontal=True)
@@ -41,15 +43,14 @@ if data_option == 'pfraw.csv':
     df, PREFIX = df_prefix('pfraw.csv')
 elif data_option == 'reidin_data.csv':
     df, PREFIX = df_prefix('reidin_data.csv')
-    df = df[['']]
+    # df = df[['']]
 else:
     df, PREFIX = df_prefix('real_estate1.csv')
 
 
 with st.expander("Show data"):
-    st.write("Here's a sample of our transaction data")
     st.write(f"Total rows: {len(df)}")
-    st.dataframe(df.head(25))
+    st.dataframe(df)
 
 
 # App Sidebar
@@ -83,13 +84,29 @@ if 'past' not in st.session_state:
 
 user_input = st.session_state.user_input
 
+now = datetime.now()
+datenow = now.strftime("%Y_%m_%d")
+os.chdir('c:\\Users\\ga201\\Desktop\\My Python Projects\\ViewIt Chatbots\\QA Chat')
+filepath = os.path.join('chat_history', now.strftime("%Y_%m_%d")+'.txt')
+
+if os.path.isfile(filepath):
+    f = open(filepath, 'a')
+else:
+    os.makedirs('chat_history', exist_ok=True)
+    f = open(filepath, 'a')
+
 # Generate a response if input exists
 if user_input:
-    print("\nUser: ", user_input)
+    user_log = f"\nUser [{datetime.now().strftime('%H:%M:%S')}]: " + user_input
+    print(user_log)
+    f.write(user_log)
+
     with st.spinner('Thinking...'):
         output = str(get_answer(question=user_input,
                      prompt_prefix=PREFIX, df=df, model=model, temperature=0.3))
-        print("Bot: ", output)
+        response_log = f"Bot [{datetime.now().strftime('%H:%M:%S')}]: " + output
+        print(response_log)
+        f.write(response_log)
         # store chat
         st.session_state.past.append(user_input)
         st.session_state.generated.append(output)

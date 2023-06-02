@@ -3,4 +3,5 @@ testapp.py
 oldmodel.py
 newmodel.py
 data/*.xlsx
+chat_history/
 __pycache__/
