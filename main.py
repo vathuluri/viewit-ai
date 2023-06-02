@@ -1,9 +1,9 @@
+import openai
+from streamlit_chat import message
+from model import get_answer, df_prefix
 import streamlit as st
 st.set_page_config(page_title="Viewit Property Analyst", page_icon="📊",
                    layout="centered", initial_sidebar_state="auto")
-from model import get_answer, df_prefix
-from streamlit_chat import message
-import openai
 
 col1, col2, col3 = st.columns(3)
 
@@ -32,20 +32,24 @@ def clear():
 # App Title
 st.title('ViewIt Chatbot 0.3')
 
+datanames = ['pfraw.csv', 'real_estate1.csv', 'reidin_data.csv']
 
-data_option = st.radio('Choose the data', ['pfraw.csv', 'real_estate1.csv'], 
+data_option = st.radio('Choose the data', datanames,
                        key='radio_option', horizontal=True)
 
 if data_option == 'pfraw.csv':
     df, PREFIX = df_prefix('pfraw.csv')
+elif data_option == 'reidin_data.csv':
+    df, PREFIX = df_prefix('reidin_data.csv')
+    df = df[['']]
 else:
     df, PREFIX = df_prefix('real_estate1.csv')
 
 
-with st.expander("See the data being used"):
+with st.expander("Show data"):
     st.write("Here's a sample of our transaction data")
     st.write(f"Total rows: {len(df)}")
-    st.dataframe(df.head(10))
+    st.dataframe(df.head(25))
 
 
 # App Sidebar
@@ -64,6 +68,12 @@ with st.sidebar:
 st.text_input("Ask a question: ", key='widget',
               placeholder='Ask a question...', on_change=clear)
 
+modelnames = ['text-davinci-003', 'gpt-3.5-turbo']
+model_option = st.radio('Choose model', modelnames,
+                        key='model_option', horizontal=True)
+
+model = model_option
+
 # storing chat history
 if 'generated' not in st.session_state:
     st.session_state['generated'] = []
@@ -77,7 +87,8 @@ user_input = st.session_state.user_input
 if user_input:
     print("\nUser: ", user_input)
     with st.spinner('Thinking...'):
-        output = str(get_answer(question=user_input, prompt_prefix=PREFIX, df=df))
+        output = str(get_answer(question=user_input,
+                     prompt_prefix=PREFIX, df=df, model=model, temperature=0.3))
         print("Bot: ", output)
         # store chat
         st.session_state.past.append(user_input)
