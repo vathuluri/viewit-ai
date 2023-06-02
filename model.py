@@ -9,16 +9,18 @@ from prompts import *
 
 
 @st.cache_data
-def load_data(filename='pfraw.csv') -> pd.DataFrame :
+def load_data(filename) -> pd.DataFrame:
     df = pd.read_csv(f"data/{filename}")
-    if 'Record Date' in df:
+    if 'Record Date' in df.columns:
         df['Record Date'] = pd.to_datetime(df['Record Date'])
+    elif 'Date' in df.columns:
+        df['Date'] = pd.to_datetime(df['Date'])
     return df
 
 
 @st.cache_resource
 def load_agent(df, temperature, prompt_prefix=SAMPLE_PROMPT_PREFIX, model='text-davinci-003'):
-    '''Loads the langchain datagrame agent for the specified dataframe.'''
+    '''Loads the langchain dataframe agent for the specified dataframe.'''
 
     llm = OpenAI(temperature=temperature, model_name=model)
     agent = create_pandas_dataframe_agent(llm=llm, df=df, prefix=prompt_prefix)
@@ -35,8 +37,9 @@ def get_answer(question, prompt_prefix, df, model='text-davinci-003', temperatur
 prefix_mapping = {
     'pfraw.csv': SAMPLE_PROMPT_PREFIX,
     'real_estate1.csv': PROMPT_PREFIX,
-    'reidin_data.csv': REIDIN_PREFIX
+    'new_reidin_data.csv': REIDIN_PREFIX
 }
+
 
 @st.cache_data
 def df_prefix(filename):
