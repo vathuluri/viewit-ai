@@ -102,7 +102,7 @@ if user_input:
 
     with st.spinner('Thinking...'):
         output = str(get_answer(question=user_input,
-                     prompt_prefix=PREFIX, df=df, model=model, temperature=0.2115))
+                     prompt_prefix=PREFIX, df=df, model=model, temperature=0.2115, verbose=True))
         response_log = f"Bot [{datetime.now().strftime('%H:%M:%S')}]: " + output
         print(response_log)
         f.write('\n'+response_log)

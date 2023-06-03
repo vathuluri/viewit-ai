@@ -19,17 +19,18 @@ def load_data(filename) -> pd.DataFrame:
 
 
 @st.cache_resource
-def load_agent(df, temperature, prompt_prefix=SAMPLE_PROMPT_PREFIX, model='text-davinci-003'):
+def load_agent(df, temperature, prompt_prefix=SAMPLE_PROMPT_PREFIX, model='text-davinci-003', verbose=False):
     '''Loads the langchain dataframe agent for the specified dataframe.'''
 
     llm = OpenAI(temperature=temperature, model_name=model)
-    agent = create_pandas_dataframe_agent(llm=llm, df=df, prefix=prompt_prefix)
+    agent = create_pandas_dataframe_agent(
+        llm=llm, df=df, prefix=prompt_prefix, verbose=verbose)
     return agent
 
 
-def get_answer(question, prompt_prefix, df, model='text-davinci-003', temperature=0.2):
+def get_answer(question, prompt_prefix, df, model='text-davinci-003', temperature=0.2, verbose=False):
     agent = load_agent(df=df, temperature=temperature,
-                       prompt_prefix=prompt_prefix, model=model)
+                       prompt_prefix=prompt_prefix, model=model, verbose=verbose)
     response = agent.run(question)
     return response
 
