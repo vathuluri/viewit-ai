@@ -39,7 +39,7 @@ prefix_mapping = {
 }
 
 
-@st.cache_data
+@st.cache_data(show_spinner=False)
 def df_prefix(filename):
     df = load_data(filename)
 
