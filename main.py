@@ -83,30 +83,18 @@ if 'past' not in st.session_state:
 
 user_input = st.session_state.user_input
 
-now = datetime.now()
-datenow = now.strftime("%Y_%m_%d")
-os.chdir('c:\\Users\\ga201\\Desktop\\My Python Projects\\ViewIt Chatbots\\QA Chat')
-filepath = os.path.join('chat_history', now.strftime("%Y_%m_%d")+'.txt')
-
-if os.path.isfile(filepath):
-    f = open(filepath, 'a')
-else:
-    os.makedirs('chat_history', exist_ok=True)
-    f = open(filepath, 'a')
+datenow = datetime.now().strftime("%Y_%m_%d")
 
 # Generate a response if input exists
 if user_input:
     user_log = f"\nUser [{datetime.now().strftime('%H:%M:%S')}]: " + user_input
     print(user_log)
-    f.write('\n'+user_log)
 
     with st.spinner('Thinking...'):
         output = str(get_answer(question=user_input,
                      prompt_prefix=PREFIX, df=df, model=model, temperature=0.2115))
         response_log = f"Bot [{datetime.now().strftime('%H:%M:%S')}]: " + output
         print(response_log)
-        f.write('\n'+response_log)
-        f.close()
         # store chat
         st.session_state.past.append(user_input)
         st.session_state.generated.append(output)
