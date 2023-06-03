@@ -1,3 +1,4 @@
+langchain
 Markdown==3.4.1
 markdown-it-py==2.2.0
 matplotlib==3.6.3
