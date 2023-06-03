@@ -20,7 +20,7 @@ def load_data(filename) -> pd.DataFrame:
 def load_agent(df, temperature, prompt_prefix=SAMPLE_PROMPT_PREFIX, model='text-davinci-003'):
     '''Loads the langchain dataframe agent for the specified dataframe.'''
 
-    llm = OpenAI(temperature=temperature, model_name=model, openai_api_key=st.secrets['api_key'])
+    llm = OpenAI(temperature=temperature, model_name=model, openai_api_key=st.secrets['api_key'], verbose=True)
     agent = create_pandas_dataframe_agent(llm=llm, df=df, prefix=prompt_prefix)
     return agent
 
