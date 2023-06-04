@@ -1,5 +1,6 @@
 test.ipynb
 testapp.py
 oldmodel.py
+chat_history/
 __pycache__/
 .streamlit/secrets.toml
