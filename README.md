@@ -22,6 +22,6 @@ Runs the chatbot on the streamlit interface. Simply navigate to thid directory o
 ---
 ### 2. `terminal_chatbot.py`
 
-Runs the QA feature on the jupyter notebook. Reads the text embedding stored in csv and defines the question answering function.
+Runs the QA feature on the jupyter notebook. Reads the DataFrame from CSV and defines the question answering function.
 
-Simply call the `answer_question()` function and pass the necessary parameters to generate responses.
+Simply call the `agent.run()` method and pass the question to generate responses.
