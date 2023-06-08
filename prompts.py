@@ -84,3 +84,14 @@ YOUR TASK:
 You should use the tools below to answer the following question:
 ---
 """
+
+SUFFIX = """
+This is the result of `print(df.head())`:
+{df}
+
+Begin!
+
+{chat_history}
+Question: {input}
+{agent_scratchpad}
+"""
