@@ -90,5 +90,7 @@ This is the result of `print(df.head())`:
 {df}
 
 Begin!
+
+{chat_history}
 Question: {input}
 {agent_scratchpad}"""
