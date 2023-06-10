@@ -1,11 +1,11 @@
+import streamlit as st
+st.set_page_config(page_title="Viewit Property Analyst", page_icon="📊",
+                   layout="centered", initial_sidebar_state="auto")
 import os
 import openai
 from streamlit_chat import message
 from datetime import datetime
 from model import df_prefix, agent
-import streamlit as st
-st.set_page_config(page_title="Viewit Property Analyst", page_icon="📊",
-                   layout="centered", initial_sidebar_state="auto")
 
 col1, col2, col3 = st.columns(3)
 
