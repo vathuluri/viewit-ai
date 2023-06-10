@@ -66,7 +66,6 @@ INSTRUCTIONS:
 
 Additional information about the columns in `df`:
 - Sales Type: the completion status of the unit. Off plan means it is under construction. Ready means it is ready to move in.
-- Reference Number: Numeric Reference Number of the property.
 - Date: Date the sale was done in the Dubai Land Department.
 - Location: General location of the Property. This is the community the property is located in.
 - Sub Location: This is the specific location of the dwelling unit (apartment, penthouse, villa, office, shop), and is the sublocation of the Location column.
