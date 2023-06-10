@@ -35,18 +35,7 @@ def clear():
 # App Title
 st.title('ViewIt Chatbot 0.3')
 
-datanames = ['real_estate1.csv', 'new_reidin_data.csv', 'pfraw.csv']
-
-data_option = st.radio('Choose the data', datanames,
-                       key='radio_option', horizontal=True)
-
-if data_option == 'pfraw.csv':
-    df, PREFIX = df_prefix('pfraw.csv')
-elif data_option == 'new_reidin_data.csv':
-    df, PREFIX = df_prefix('new_reidin_data.csv')
-else:
-    df, PREFIX = df_prefix('real_estate1.csv')
-
+df, PREFIX = df_prefix('new_reidin_data.csv')
 
 with st.expander("Show data"):
     st.write(f"Total rows: {len(df)}")
