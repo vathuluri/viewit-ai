@@ -1,12 +1,13 @@
-import streamlit as st
-st.set_page_config(page_title="Viewit Property Analyst", page_icon="📊",
-                   layout="centered", initial_sidebar_state="auto")
-import os
-import openai
+from model import agent, df_prefix, icons
 import random
+import streamlit as st
+st.set_page_config(page_title="Viewit Property Analyst", page_icon=random.choice(icons),
+                   layout="centered", initial_sidebar_state="auto")
+import openai
 from streamlit_chat import message
 from datetime import datetime
-from model import agent, df_prefix, icons
+
+
 col1, col2, col3 = st.columns(3)
 
 with col2:
