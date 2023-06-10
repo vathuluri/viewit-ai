@@ -1,12 +1,12 @@
+import streamlit as st
+st.set_page_config(page_title="Viewit Property Analyst", page_icon="📊",
+                   layout="centered", initial_sidebar_state="auto")
 import os
 import openai
 import random
 from streamlit_chat import message
 from datetime import datetime
-from model import get_answer, df_prefix, icons
-import streamlit as st
-st.set_page_config(page_title="Viewit Property Analyst", page_icon=random.choice(icons),
-                   layout="centered", initial_sidebar_state="auto")
+from model import agent, df_prefix, icons
 col1, col2, col3 = st.columns(3)
 
 with col2:
@@ -68,11 +68,6 @@ with st.sidebar:
 st.text_input("Ask a question: ", key='widget',
               placeholder='Ask a question...', on_change=clear)
 
-modelnames = ['text-davinci-003', 'gpt-3.5-turbo']
-model_option = st.radio('Choose model', modelnames,
-                        key='model_option', horizontal=True)
-
-model = model_option
 
 # storing chat history
 if 'generated' not in st.session_state:
@@ -91,8 +86,7 @@ if user_input:
     print(user_log)
 
     with st.spinner('Thinking...'):
-        output = str(get_answer(question=user_input,
-                     prompt_prefix=PREFIX, df=df, model=model, temperature=0.2115))
+        output = str(agent.run(user_input))
         response_log = f"Bot [{datetime.now().strftime('%H:%M:%S')}]: " + output
         print(response_log)
         # store chat

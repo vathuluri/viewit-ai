@@ -1,6 +1,7 @@
 test.ipynb
 testapp.py
 oldmodel.py
+newmodel.py
+data/*.xlsx
 chat_history/
 __pycache__/
-.streamlit/secrets.toml
