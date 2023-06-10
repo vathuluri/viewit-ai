@@ -54,7 +54,7 @@ def create_pandas_dataframe_agent(
     )
 
 agent = create_pandas_dataframe_agent(
-    llm = OpenAI(temperature=0.25, model_name="text-davinci-003"),
+    llm = OpenAI(temperature=0.25, model_name="text-davinci-003", openai_api_key=st.secrets['api_key']),
     df= load_data('new_reidin_data.csv'),
     prefix=REIDIN_PREFIX,
     verbose=True
