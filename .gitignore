@@ -2,6 +2,7 @@ test.ipynb
 testapp.py
 oldmodel.py
 newmodel.py
+full_prompt.txt
 data/*.xlsx
 chat_history/
 __pycache__/

@@ -13,9 +13,9 @@ icons = "😎,😶‍🌫️,🤯,👾,🤖,👽,🦾,🕵️,✨,👓,🕶️,�
 def load_data(filename) -> pd.DataFrame:
     df = pd.read_csv(f"data/{filename}")
     if 'Record Date' in df.columns:
-        df['Record Date'] = pd.to_datetime(df['Record Date'])
+        df['Record Date'] = pd.to_datetime(df['Record Date'], format="%Y-%M-%d")
     elif 'Date' in df.columns:
-        df['Date'] = pd.to_datetime(df['Date'])
+        df['Date'] = pd.to_datetime(df['Date'], format="%Y-%M-%d")
     return df
 
 
@@ -62,7 +62,7 @@ agent = create_pandas_dataframe_agent(
 
 
 @st.cache_resource
-def load_agent(df, temperature, prompt_prefix=SAMPLE_PROMPT_PREFIX, model='text-davinci-003'):
+def load_agent(df, temperature, prompt_prefix, model='text-davinci-003'):
     '''Loads the langchain dataframe agent for the specified dataframe.'''
 
     llm = OpenAI(temperature=temperature, model_name=model, openai_api_key=st.secrets['api_key'], verbose=True)
@@ -78,8 +78,6 @@ def get_answer(question, prompt_prefix, df, model='text-davinci-003', temperatur
 
 
 prefix_mapping = {
-    'pfraw.csv': SAMPLE_PROMPT_PREFIX,
-    'real_estate1.csv': PROMPT_PREFIX,
     'new_reidin_data.csv': REIDIN_PREFIX
 }
 

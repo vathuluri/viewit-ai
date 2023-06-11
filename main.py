@@ -35,7 +35,8 @@ def clear():
 # App Title
 st.title('ViewIt Chatbot 0.3')
 
-df, PREFIX = df_prefix('new_reidin_data.csv')
+data, PREFIX = df_prefix('new_reidin_data.csv')
+df = data.drop("Price per sq ft", axis=1)
 
 with st.expander("Show data"):
     st.write(f"Total rows: {len(df)}")
