@@ -13,9 +13,9 @@ icons = "😎,😶‍🌫️,🤯,👾,🤖,👽,🦾,🕵️,✨,👓,🕶️,�
 def load_data(filename) -> pd.DataFrame:
     df = pd.read_csv(f"data/{filename}")
     if 'Record Date' in df.columns:
-        df['Record Date'] = pd.to_datetime(df['Record Date'], format="%Y-%M-%d")
+        df['Record Date'] = pd.to_datetime(df['Record Date'], format="%d-%M-%Y").dt.date
     elif 'Date' in df.columns:
-        df['Date'] = pd.to_datetime(df['Date'], format="%Y-%M-%d")
+        df['Date'] = pd.to_datetime(df['Date'], format="%d-%M-%Y").dt.date
     return df
 
 
