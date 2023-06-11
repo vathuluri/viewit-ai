@@ -33,7 +33,7 @@ def clear():
 
 
 # App Title
-st.title('ViewIt Chatbot 0.3')
+st.title('ViewIt Chatbot')
 
 data, PREFIX = df_prefix('new_reidin_data.csv')
 df = data.drop("Price per sq ft", axis=1)
@@ -47,12 +47,15 @@ with st.expander("Show data"):
 with st.sidebar:
     st.markdown(f"""
                 # About
-                This is version 0.3 of the Chatbot Assistant that will help you
+                This is the Chatbot Assistant that will help you
                   look for your desired properties.
                 
                 # How to use
                 Simply enter your query in the text field and the assistant 
                 will help you out.
+
+
+                ###### ©️ Hamdan Mohammad                
                 """)
 
 
