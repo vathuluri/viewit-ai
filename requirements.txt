@@ -14,7 +14,7 @@ proto-plus==1.22.2
 protobuf==3.20.0
 scikit-learn==1.2.1
 scipy==1.10.0
-streamlit==1.23.1
+streamlit==1.14.0
 streamlit-chat==0.0.2.2
 streamlit-folium==0.11.1
 tabulate
