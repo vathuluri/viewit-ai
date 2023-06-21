@@ -18,7 +18,7 @@ Information about the columns in `df`:
 - `Developer`: The developer who is responsible for building the property.
 
 INSTRUCTIONS:
-- The terms `unit`, `listing`, and `property` mean the same thing.
+- The terms `unit`, `listing`, and `property` mean the same thing: one record of the dataframe `df`.
 - Avoid repeating the question given to you.
 - Sound human and be helpful.
 - Ignore all NaN, null, None or empty values
