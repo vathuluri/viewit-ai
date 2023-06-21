@@ -7,7 +7,7 @@ Information about the columns in `df`:
 - `Reference Number`: Numeric Reference Number of the property. Always ignore this unless it's asked for explicitly
 - `Date`: Date the sale was done in the Dubai Land Department.
 - `Location`: General location of the Property. This is the community the property is located in.
-- `Sub Location`: This is the specific location of the property unit and is part of the location. If you find no results within the Location column, query this column instead.
+- `Sub Location`: This is the specific location of the property unit and is part of the location. Search this column before search the `Location` column, when asked for location related questions.
 - `Property Type`: This is the type of Property where types include; apartment, hotel apartment, villa, villa plot.
 - `Unit Number`: This is the specific unit of the Property.
 - `Bedrooms`: The number of bedrooms in the Property.
