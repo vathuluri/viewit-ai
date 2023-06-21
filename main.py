@@ -53,9 +53,7 @@ with st.sidebar:
                 # How to use
                 Simply enter your query in the text field and the assistant 
                 will help you out.
-
-
-                ###### ©️ Hamdan Mohammad                
+                
                 """)
     
     with st.expander("Commonly asked questions"):
@@ -63,18 +61,16 @@ with st.sidebar:
             """
             :blue[Note that some questions are data specific and is indicated in parenthesis]
 
-            - What are the top 10 properties that had the lowest assessed value but highest selling price? Give me their address and serial number :blue[(US)]
-            - Which town had the best investment opportunities? Explain your answer :blue[(US)]
-            - Give me a summary
-            - Of all properties, what percentage are apartments? :blue[(Redin)]
+            - Give me a summary of all properties, what percentage are apartments?
             - Which location has the largest number of sales?
-            - Give me a summary of the the top 10 most expensive properties
-            - Excluding price per sq ft, what are the 3 the most reliable predictors of price? Explain your answer :blue[(Redin)]
-            - Which developer made the cheapest property and how much was it? How many properties have they sold in total and what is the price range? :blue[(Redin)]
-            - What percentage capital appreciation would I make if I bought an average priced property in the meadows in 2020 and sold it in 2023? :blue[(Redin)]
-            - What does sales type mean? :blue[(Redin)]
+            - Give me a summary of the the top 10 most expensive properties excluding price per sq ft, what are the 3 the most reliable predictors of price? Explain your answer
+            - Which developer made the cheapest property and how much was it? How many properties have they sold in total and what is the price range?
+            - What percentage capital appreciation would I make if I bought an average priced property in the meadows in 2020 and sold it in 2023?
+            - What does sales type mean?
             """
         )
+    
+    st.markdown('###### ©️ Hamdan Mohammad')
 
 
 st.text_input("Ask a question: ", key='widget',
