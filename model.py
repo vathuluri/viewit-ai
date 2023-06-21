@@ -54,27 +54,27 @@ def create_pandas_dataframe_agent(
     )
 
 agent = create_pandas_dataframe_agent(
-    llm = OpenAI(temperature=0.25, model_name="text-davinci-003", openai_api_key=st.secrets['api_key']),
+    llm = OpenAI(temperature=0.1, model_name="text-davinci-003", openai_api_key=st.secrets['api_key']),
     df= load_data('new_reidin_data.csv'),
     prefix=REIDIN_PREFIX,
     verbose=True
 )
 
 
-@st.cache_resource
-def load_agent(df, temperature, prompt_prefix, model='text-davinci-003'):
-    '''Loads the langchain dataframe agent for the specified dataframe.'''
+# @st.cache_resource
+# def load_agent(df, temperature, prompt_prefix, model='text-davinci-003'):
+#     '''Loads the langchain dataframe agent for the specified dataframe.'''
 
-    llm = OpenAI(temperature=temperature, model_name=model, openai_api_key=st.secrets['api_key'], verbose=True)
-    agent = create_pandas_dataframe_agent(llm=llm, df=df, prefix=prompt_prefix)
-    return agent
+#     llm = OpenAI(temperature=temperature, model_name=model, openai_api_key=st.secrets['api_key'], verbose=True)
+#     agent = create_pandas_dataframe_agent(llm=llm, df=df, prefix=prompt_prefix)
+#     return agent
 
 
-def get_answer(question, prompt_prefix, df, model='text-davinci-003', temperature=0.2):
-    agent = load_agent(df=df, temperature=temperature,
-                       prompt_prefix=prompt_prefix, model=model)
-    response = agent.run(question)
-    return response
+# def get_answer(question, prompt_prefix, df, model='text-davinci-003', temperature=0.2):
+#     agent = load_agent(df=df, temperature=temperature,
+#                        prompt_prefix=prompt_prefix, model=model)
+#     response = agent.run(question)
+#     return response
 
 
 prefix_mapping = {
