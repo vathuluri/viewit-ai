@@ -13,7 +13,7 @@ _It is recommmended to create a virtual environment and install the requirements
 ---
 ### 1. `main.py`
 
-Runs the chatbot on the streamlit interface. Simply navigate to thid directory on your cli and run:
+Runs the chatbot on the streamlit interface. Simply navigate to this directory on your cli and run:
 
     $ streamlit run main.py
 

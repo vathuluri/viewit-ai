@@ -1,12 +1,11 @@
-from model import agent, df_prefix, icons
-from random import choice
-import streamlit as st
-st.set_page_config(page_title="Viewit Property Analyst", page_icon=choice(icons),
-                   layout="centered", initial_sidebar_state="auto")
+import os
 import openai
-from streamlit_chat import message
+import streamlit as st
+from model import df_prefix, agent
 from datetime import datetime
+from streamlit_chat import message
 
+st.set_page_config(page_title="Viewit Property Analyst", page_icon="📊")
 
 col1, col2, col3 = st.columns(3)
 
@@ -35,8 +34,8 @@ def clear():
 # App Title
 st.title('ViewIt Chatbot')
 
-data, PREFIX = df_prefix('new_reidin_data.csv')
-df = data.drop("Price per sq ft", axis=1)
+df, PREFIX = df_prefix('reidin_new.csv')
+
 
 with st.expander("Show data"):
     st.write(f"Total rows: {len(df)}")
@@ -47,14 +46,19 @@ with st.expander("Show data"):
 with st.sidebar:
     st.markdown(f"""
                 # About
-                This is the Chatbot Assistant that will help you
+                This Chatbot Assistant that will help you
                   look for your desired properties.
                 
                 # How to use
                 Simply enter your query in the text field and the assistant 
                 will help you out.
+
+                # Data
+                Uses Reidin Property Data.
                 
+                Source: http://reidin.com
                 """)
+
     
     with st.expander("Commonly asked questions"):
         st.write(
@@ -71,7 +75,6 @@ with st.sidebar:
         )
     
     st.markdown('###### ©️ Hamdan Mohammad')
-
 
 st.text_input("Ask a question: ", key='widget',
               placeholder='Ask a question...', on_change=clear)
@@ -94,12 +97,16 @@ if user_input:
     print(user_log)
 
     with st.spinner('Thinking...'):
-        output = str(agent.run(user_input))
-        response_log = f"Bot [{datetime.now().strftime('%H:%M:%S')}]: " + output
-        print(response_log)
-        # store chat
-        st.session_state.past.append(user_input)
-        st.session_state.generated.append(output)
+        try:
+            output = str(agent.run(user_input))
+            response_log = f"Bot [{datetime.now().strftime('%H:%M:%S')}]: " + output
+            print(response_log)
+            # store chat
+            st.session_state.past.append(user_input)
+            st.session_state.generated.append(output)
+
+        except:
+            st.write("⚠️ Oops! Looks like you ran into an error. Try refreshing the page.")
 
 if st.session_state['generated']:
     for i in range(len(st.session_state['generated'])-1, -1, -1):
@@ -113,4 +120,4 @@ st.caption(
     """Made by Hamdan Mohammad. [GitHub](https://github.com/hamdan-27) | 
     [Instagram](https://instagram/hxm.dxn_)""")
 # st.caption(
-#     "Like what we're building? [Join the waitlist](https://tally.so/r/w4QW4r)")
+#     "Like what we're building? [Join the waitlist]()")

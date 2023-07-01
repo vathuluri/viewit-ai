@@ -18,7 +18,6 @@ def load_data(filename) -> pd.DataFrame:
         df['Date'] = pd.to_datetime(df['Date'], format="%d-%M-%Y").dt.date
     return df
 
-
 # @st.cache_resource
 def create_pandas_dataframe_agent(
     llm,
@@ -61,28 +60,13 @@ agent = create_pandas_dataframe_agent(
 )
 
 
-# @st.cache_resource
-# def load_agent(df, temperature, prompt_prefix, model='text-davinci-003'):
-#     '''Loads the langchain dataframe agent for the specified dataframe.'''
-
-#     llm = OpenAI(temperature=temperature, model_name=model, openai_api_key=st.secrets['api_key'], verbose=True)
-#     agent = create_pandas_dataframe_agent(llm=llm, df=df, prefix=prompt_prefix)
-#     return agent
-
-
-# def get_answer(question, prompt_prefix, df, model='text-davinci-003', temperature=0.2):
-#     agent = load_agent(df=df, temperature=temperature,
-#                        prompt_prefix=prompt_prefix, model=model)
-#     response = agent.run(question)
-#     return response
-
-
 prefix_mapping = {
-    'new_reidin_data.csv': REIDIN_PREFIX
+    'new_reidin_data.csv': REIDIN_PREFIX,
+    'reidin_new.csv': REIDIN_PREFIX
 }
 
 
-@st.cache_data(show_spinner=False)
+@st.cache_data
 def df_prefix(filename):
     df = load_data(filename)
 
