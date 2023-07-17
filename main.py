@@ -63,8 +63,6 @@ with st.sidebar:
     with st.expander("Commonly asked questions"):
         st.write(
             """
-            :blue[Note that some questions are data specific and is indicated in parenthesis]
-
             - Give me a summary of all properties, what percentage are apartments?
             - Which location has the largest number of sales?
             - Give me a summary of the the top 10 most expensive properties excluding price per sq ft, what are the 3 the most reliable predictors of price? Explain your answer
