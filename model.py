@@ -15,7 +15,7 @@ def load_data(filename) -> pd.DataFrame:
     if 'Record Date' in df.columns:
         df['Record Date'] = pd.to_datetime(df['Record Date'], format="%d-%M-%Y").dt.date
     elif 'Date' in df.columns:
-        df['Date'] = pd.to_datetime(df['Date']).dt.date
+        df['Date'] = pd.to_datetime(df['Date'], dayfirst=True).dt.date
     return df
 
 # @st.cache_resource

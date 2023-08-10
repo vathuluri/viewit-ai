@@ -3,3 +3,10 @@ base = "dark"
 primaryColor = "#ffc300"
 backgroundColor = "#0a3696"
 secondaryBackgroundColor = "#062363"
+
+[logger]
+
+# Level of logging: 'error', 'warning', 'info', or 'debug'.
+
+# Default: 'info'
+level = "debug"
