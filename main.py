@@ -15,7 +15,7 @@ with col2:
 # Clear Session State Variables
 def clear_session_states():
     for key in st.session_state.keys():
-        del st.session_state[key]
+        st.session_state[key] = ''
 
 
 # ViewIt OpenAI API key
@@ -45,8 +45,6 @@ with st.expander("Show data"):
 
 if st.button('Clear session state'):
     clear_session_states()
-
-st.info('Click to reset session states')
 
 # App Sidebar
 with st.sidebar:
