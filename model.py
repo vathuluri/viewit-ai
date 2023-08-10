@@ -9,7 +9,7 @@ from langchain.tools.python.tool import PythonAstREPLTool
 
 icons = "😎,😶‍🌫️,🤯,👾,🤖,👽,🦾,🕵️,✨,👓,🕶️,🔑,🗝️,🩻,🔍,💡,📈,📊,📍,📎,🌏,🏙️,🏡,🏠,🏢,🏬,🌇".split(',')
 
-@st.cache_data
+#@st.cache_data
 def load_data(filename) -> pd.DataFrame:
     df = pd.read_csv(f"data/{filename}")
     if 'Record Date' in df.columns:
@@ -66,7 +66,7 @@ prefix_mapping = {
 }
 
 
-@st.cache_data
+#@st.cache_data
 def df_prefix(filename):
     df = load_data(filename)
 

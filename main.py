@@ -85,7 +85,7 @@ if 'generated' not in st.session_state:
 if 'past' not in st.session_state:
     st.session_state['past'] = []
 
-user_input = st.session_state.user_input
+user_input = st.session_state['user_input']
 
 datenow = datetime.now().strftime("%Y_%m_%d")
 
