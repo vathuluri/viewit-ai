@@ -12,9 +12,10 @@ col1, col2, col3 = st.columns(3)
 with col2:
     st.image("https://i.postimg.cc/Nfz5nZ8G/Logo.png", width=200)
 
-# # Clear Session State Variables
-# for key in st.session_state.keys():
-#     del st.session_state[key]
+# Clear Session State Variables
+def clear_session_states():
+    for key in st.session_state.keys():
+        del st.session_state[key]
 
 
 # ViewIt OpenAI API key
@@ -41,6 +42,11 @@ with st.expander("Show data"):
     st.write(f"Total rows: {len(df)}")
     st.dataframe(df)
 
+
+if st.button('Clear session state'):
+    clear_session_states()
+
+st.info('Click to reset session states', icon='🛈')
 
 # App Sidebar
 with st.sidebar:
