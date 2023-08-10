@@ -61,6 +61,8 @@ with st.sidebar:
                 Uses Reidin Property Data.
                 
                 Source: http://reidin.com
+
+                {st.session_state}
                 """)
 
     
@@ -108,7 +110,7 @@ if user_input:
             st.session_state.generated.append(output)
 
         except:
-            st.write("⚠️ Oops! Looks like you ran into an error. Try refreshing the page.")
+            st.write("⚠️ Oops! Looks like you ran into an error. Try asking another question or refresh the page.")
 
 if st.session_state['generated']:
     for i in range(len(st.session_state['generated'])-1, -1, -1):
