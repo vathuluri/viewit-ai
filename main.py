@@ -46,7 +46,7 @@ with st.expander("Show data"):
 if st.button('Clear session state'):
     clear_session_states()
 
-st.info('Click to reset session states', icon='🛈')
+st.info('Click to reset session states')
 
 # App Sidebar
 with st.sidebar:
