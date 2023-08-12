@@ -160,7 +160,6 @@ with st.sidebar:
                 
                 Source: http://reidin.com
 
-                {st.session_state.langchain_messages}
                 """)
 
     
