@@ -6,6 +6,7 @@ from prompts import *
 from langchain.agents import ZeroShotAgent, AgentExecutor
 from langchain.memory import ConversationBufferMemory
 from langchain.tools.python.tool import PythonAstREPLTool
+from langchain.memory.chat_message_histories import StreamlitChatMessageHistory
 
 icons = "😎,😶‍🌫️,🤯,👾,🤖,👽,🦾,🕵️,✨,👓,🕶️,🔑,🗝️,🩻,🔍,💡,📈,📊,📍,📎,🌏,🏙️,🏡,🏠,🏢,🏬,🌇".split(',')
 
@@ -52,12 +53,7 @@ def create_pandas_dataframe_agent(
         memory=memory
     )
 
-agent = create_pandas_dataframe_agent(
-    llm = OpenAI(temperature=0.1, model_name="text-davinci-003", openai_api_key=st.secrets['api_key']),
-    df= load_data('new_reidin_data.csv'),
-    prefix=REIDIN_PREFIX,
-    verbose=True
-)
+
 
 
 prefix_mapping = {

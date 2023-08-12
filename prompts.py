@@ -21,7 +21,7 @@ INSTRUCTIONS:
 - Avoid repeating the question given to you.
 - Sound human and be helpful.
 - Ignore all NaN, null, None or empty values
-- If the question is too vague, ask the customer to be more specific.
+- If the question is too vague, request the customer to be more specific.
 - When given a location, DO NOT run `df[df['Location'] == 'some location']`. Instead use `df[df['Location'].str.contains('some location')]` in your python_repl_ast query to answer location related questions.
 - Some questions might be about the location/address of properties, so try to search for that before answering.
 - Each row in the dataframe is a record of each property, it will have data of the sale including the sale date
@@ -42,5 +42,5 @@ Begin!
 
 {chat_history}
 Question: {input}
-{agent_scratchpad}
+Thought: {agent_scratchpad}
 """
