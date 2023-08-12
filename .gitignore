@@ -4,5 +4,6 @@ oldmodel.py
 newmodel.py
 full_prompt.txt
 data/*.xlsx
+.streamlit/secrets.toml
 chat_history/
 __pycache__/
