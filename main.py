@@ -179,7 +179,7 @@ with st.sidebar:
 
 # Render current messages from StreamlitChatMessageHistory
 for msg in msgs.messages:
-    st.chat_message(msg.type, avatar="🤖").write(msg.content)
+    st.chat_message(msg.type).write(msg.content)
 
 # If user inputs a new prompt, generate and draw a new response
 if user_input := st.chat_input('Ask away'):
