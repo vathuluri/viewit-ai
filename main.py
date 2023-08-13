@@ -31,7 +31,7 @@ prefix_mapping = {
 }
 
 
-#@st.cache_data
+# @st.cache_data
 def df_prefix(filename):
     df = load_data(filename)
 
@@ -40,11 +40,14 @@ def df_prefix(filename):
 
     return df, PREFIX
 
-#@st.cache_data
+# @st.cache_data
+
+
 def load_data(filename) -> pd.DataFrame:
     df = pd.read_csv(f"data/{filename}")
     if 'Record Date' in df.columns:
-        df['Record Date'] = pd.to_datetime(df['Record Date'], format="%d-%M-%Y").dt.date
+        df['Record Date'] = pd.to_datetime(
+            df['Record Date'], format="%d-%M-%Y").dt.date
     elif 'Date' in df.columns:
         df['Date'] = pd.to_datetime(df['Date'], dayfirst=True).dt.date
     return df
@@ -56,10 +59,11 @@ def create_pandas_dataframe_agent(
     df: pd.DataFrame,
     prefix: str = REIDIN_PREFIX,
     suffix: str = SUFFIX,
-    input_variables = None,
+    format_instructions=FORMAT_INSTRUCTIONS,
+    input_variables=None,
     verbose: bool = False,
     # memory: ConversationBufferMemory = ConversationBufferMemory(memory_key="chat_history")
-    memory = memory
+    memory=memory
 ) -> AgentExecutor:
     """Construct a pandas agent from an LLM and dataframe."""
 
@@ -69,7 +73,7 @@ def create_pandas_dataframe_agent(
         input_variables = ["df", "input", "chat_history", "agent_scratchpad"]
     tools = [PythonAstREPLTool(locals={"df": df})]
     prompt = ZeroShotAgent.create_prompt(
-        tools, prefix=prefix, suffix=suffix, input_variables=input_variables
+        tools, prefix=prefix, suffix=suffix, format_instructions=format_instructions, input_variables=input_variables
     )
     partial_prompt = prompt.partial(df=str(df.head()))
     llm_chain = LLMChain(
@@ -77,7 +81,8 @@ def create_pandas_dataframe_agent(
         prompt=partial_prompt
     )
     tool_names = [tool.name for tool in tools]
-    agent = ZeroShotAgent(llm_chain=llm_chain, allowed_tools=tool_names, verbose=verbose)
+    agent = ZeroShotAgent(llm_chain=llm_chain,
+                          allowed_tools=tool_names, verbose=verbose)
     return AgentExecutor.from_agent_and_tools(
         agent=agent,
         tools=tools,
@@ -87,8 +92,9 @@ def create_pandas_dataframe_agent(
 
 
 agent = create_pandas_dataframe_agent(
-    llm = OpenAI(temperature=0.1, model_name="text-davinci-003", openai_api_key=st.secrets['api_key']),
-    df= load_data('reidin_new.csv'),
+    llm=OpenAI(temperature=0.1, model_name="text-davinci-003",
+               openai_api_key=st.secrets['api_key']),
+    df=load_data('reidin_new.csv'),
     prefix=REIDIN_PREFIX,
     verbose=True,
     memory=memory
@@ -101,7 +107,7 @@ with col2:
     st.image("https://i.postimg.cc/Nfz5nZ8G/Logo.png", width=200)
 
 
-# Give the user a surprise 
+# Give the user a surprise
 welcome_msg = ''
 datenow = datetime.now().strftime("%d/%m")
 if datenow == "30/04":
@@ -162,7 +168,6 @@ with st.sidebar:
 
                 """)
 
-    
     with st.expander("Commonly asked questions"):
         st.write(
             """
@@ -174,7 +179,7 @@ with st.sidebar:
             - What does sales type mean?
             """
         )
-    
+
     st.markdown('###### ©️ Hamdan Mohammad')
 
 # Render current messages from StreamlitChatMessageHistory
@@ -184,10 +189,10 @@ for msg in msgs.messages:
 # If user inputs a new prompt, generate and draw a new response
 if user_input := st.chat_input('Ask away'):
     st.chat_message("human", avatar="😃").write(user_input)
-    
+
     user_log = f"\nUser [{datetime.now().strftime('%H:%M:%S')}]: " + user_input
     print(user_log)
-    
+
     # Note: new messages are saved to history automatically by Langchain during run
     with st.spinner('Thinking...'):
         try:
@@ -196,10 +201,11 @@ if user_input := st.chat_input('Ask away'):
         except Exception as e:
             response = str(e)
             if response.startswith("Could not parse LLM output: `"):
-                response = response.removeprefix("Could not parse LLM output: `").removesuffix("`")
-            
+                response = response.removeprefix(
+                    "Could not parse LLM output: `").removesuffix("`")
+
         st.chat_message("ai", avatar="🤖").write(response)
-    
+
     response_log = f"Bot [{datetime.now().strftime('%H:%M:%S')}]: " + response
     print(response_log)
 
@@ -227,8 +233,8 @@ if user_input := st.chat_input('Ask away'):
 #             st.session_state.past.append(user_input)
 #             st.session_state.generated.append(output)
 
-        # except:
-        #     st.write("⚠️ Oops! Looks like you ran into an error. Try asking another question or refresh the page.")
+    # except:
+    #     st.write("⚠️ Oops! Looks like you ran into an error. Try asking another question or refresh the page.")
 
 # if st.session_state['generated']:
 #     for i in range(len(st.session_state['generated'])-1, -1, -1):
