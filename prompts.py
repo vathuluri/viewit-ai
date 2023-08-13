@@ -39,7 +39,7 @@ FORMAT_INSTRUCTIONS = """To use a tool, please use the following format:
 
 ```
 Input: the input question you must answer
-Thought: you should always think about what to do
+Thought: Do I need to use a tool? Yes
 Action: the action to take, should be one of [{tool_names}]
 Action Input: the input to the action
 Observation: the result of the action
