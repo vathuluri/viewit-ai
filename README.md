@@ -1,8 +1,6 @@
-# ViewIt Chatbot_v0.3
+# ViewIt Chatbot
 
 This chatbot now reads tabular data directly, for question answering.
-
-Contains a webcrawler to crawl the domain and scrape the data, which is then used to create embeddings and context for the AI model.
 
 Check the guide on [how to clone a repository.](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)
 
@@ -13,9 +11,16 @@ _It is recommmended to create a virtual environment and install the requirements
 ---
 ### 1. `main.py`
 
+For debugging:
+
 Runs the chatbot on the streamlit interface. Simply navigate to this directory on your cli and run:
 
     $ streamlit run main.py
+
+
+## Live app:
+
+[Open In Streamlit](https://viewit-ai-chatbot-hamdan.streamlit.app/)
 
 [Official Streamlit Documentation](https://docs.streamlit.io/)
 
