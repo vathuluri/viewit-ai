@@ -5,51 +5,28 @@ from datetime import datetime
 # from langchain.agents import create_pandas_dataframe_agent
 from prompts import *
 from langchain import OpenAI, LLMChain
+from langchain.chat_models import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
 from langchain.tools.python.tool import PythonAstREPLTool
 from langchain.agents import ZeroShotAgent, AgentExecutor
 from langchain.memory.chat_message_histories import StreamlitChatMessageHistory
 
 try:
-    st.set_page_config(page_title="Viewit Property Analyst", page_icon="📊")
+    st.set_page_config(
+        page_title="Viewit.AI | Property Analyst", page_icon="🌇")
+
 except Exception as e:
     st.toast(str(e))
     st.toast("Psst. Try refreshing the page.", icon="👀")
 
-# ViewIt OpenAI API key
-openai.organization = st.secrets['org']
-openai.api_key = st.secrets['api_key']
 
-# Set up memory
-msgs = StreamlitChatMessageHistory(key="langchain_messages")
-memory = ConversationBufferMemory(chat_memory=msgs, memory_key="chat_history")
-
-
-prefix_mapping = {
-    'new_reidin_data.csv': REIDIN_PREFIX,
-    'reidin_new.csv': REIDIN_PREFIX
-}
-
-
-# @st.cache_data
-def df_prefix(filename):
-    df = load_data(filename)
-
-    if filename in prefix_mapping:
-        PREFIX = prefix_mapping[filename]
-
-    return df, PREFIX
-
-# @st.cache_data
-
-
+@st.cache_data
 def load_data(filename) -> pd.DataFrame:
     df = pd.read_csv(f"data/{filename}")
-    if 'Record Date' in df.columns:
-        df['Record Date'] = pd.to_datetime(
-            df['Record Date'], format="%d-%M-%Y").dt.date
-    elif 'Date' in df.columns:
+
+    if 'Date' in df.columns:
         df['Date'] = pd.to_datetime(df['Date'], dayfirst=True).dt.date
+
     return df
 
 
@@ -57,32 +34,40 @@ def load_data(filename) -> pd.DataFrame:
 def create_pandas_dataframe_agent(
     llm,
     df: pd.DataFrame,
-    prefix: str = REIDIN_PREFIX,
-    suffix: str = SUFFIX,
-    format_instructions=FORMAT_INSTRUCTIONS,
-    input_variables=None,
-    verbose: bool = False,
+    prefix: str,
+    suffix: str,
+    format_instructions: str,
+    verbose: bool,
     # memory: ConversationBufferMemory = ConversationBufferMemory(memory_key="chat_history")
-    memory=memory
+    memory
 ) -> AgentExecutor:
     """Construct a pandas agent from an LLM and dataframe."""
 
     if not isinstance(df, pd.DataFrame):
         raise ValueError(f"Expected pandas object, got {type(df)}")
-    if input_variables is None:
-        input_variables = ["df", "input", "chat_history", "agent_scratchpad"]
+
+    input_variables = ["df", "input", "chat_history", "agent_scratchpad"]
+
     tools = [PythonAstREPLTool(locals={"df": df})]
+
     prompt = ZeroShotAgent.create_prompt(
-        tools, prefix=prefix, suffix=suffix, format_instructions=format_instructions, input_variables=input_variables
+        tools=tools,
+        prefix=prefix,
+        suffix=suffix,
+        format_instructions=format_instructions,
+        input_variables=input_variables
     )
     partial_prompt = prompt.partial(df=str(df.head()))
+
     llm_chain = LLMChain(
         llm=llm,
         prompt=partial_prompt
     )
     tool_names = [tool.name for tool in tools]
+
     agent = ZeroShotAgent(llm_chain=llm_chain,
                           allowed_tools=tool_names, verbose=verbose)
+
     return AgentExecutor.from_agent_and_tools(
         agent=agent,
         tools=tools,
@@ -91,35 +76,55 @@ def create_pandas_dataframe_agent(
     )
 
 
+# VARIABLES
+MODEL_NAME = "gpt-4"
+TEMPERATURE = 0.1
+DATASET_NAME = 'reidin_new.csv'
+df = load_data(DATASET_NAME)
+
+if MODEL_NAME == 'gpt-4':
+    llm = ChatOpenAI(temperature=TEMPERATURE,
+                     model_name=MODEL_NAME,
+                     openai_api_key=st.secrets['api_key'])
+else:
+    llm = OpenAI(temperature=TEMPERATURE,
+                 model_name=MODEL_NAME,
+                 openai_api_key=st.secrets['api_key'])
+
+# ViewIt OpenAI API key
+openai.organization = st.secrets['org']
+openai.api_key = st.secrets['api_key']
+
+
+# Set up memory
+msgs = StreamlitChatMessageHistory(key="langchain_messages")
+memory = ConversationBufferMemory(chat_memory=msgs, memory_key="chat_history")
+
+
+# AGENT CREATION HAPPENS HERE
 agent = create_pandas_dataframe_agent(
-    llm=OpenAI(temperature=0.1, model_name="text-davinci-003",
-               openai_api_key=st.secrets['api_key']),
-    df=load_data('reidin_new.csv'),
+    llm=llm,
+    df=df,
     prefix=REIDIN_PREFIX,
+    suffix=SUFFIX,
+    format_instructions=FORMAT_INSTRUCTIONS,
     verbose=True,
     memory=memory
 )
 
 
-col1, col2, col3 = st.columns(3)
+# USER INTERFACE
 
+# Add Viewit logo to the center of page
+col1, col2, col3 = st.columns(3)
 with col2:
     st.image("https://i.postimg.cc/Nfz5nZ8G/Logo.png", width=200)
 
 
-# Give the user a surprise
-welcome_msg = ''
-datenow = datetime.now().strftime("%d/%m")
-if datenow == "30/04":
-    st.baloons()
-    welcome_msg = "It's my birthdaayyy!"
-else:
-    # st.snow()
-    # welcome_msg = "I hope I've cooled you down in this unforgiving weather :)."
-    welcome_msg = ""
-
-if len(msgs.messages) == 0:
-    msgs.add_ai_message(welcome_msg + " How can I help you today?")
+# App Title
+# st.title('ViewIt.AI')
+st.header('🕵️‍♂️ ViewIt AI | Your Reliable Property Assistant')
+st.text('Thousands of properties. One agent.')
 
 
 # if 'user_input' not in st.session_state:
@@ -129,11 +134,6 @@ if len(msgs.messages) == 0:
 #     st.session_state.user_input = st.session_state.widget
 #     st.session_state.widget = ''
 
-
-# App Title
-st.title('ViewIt Chatbot')
-
-df, PREFIX = df_prefix('reidin_new.csv')
 
 
 with st.expander("Show data"):
@@ -152,7 +152,8 @@ with st.expander("Show data"):
 
 # App Sidebar
 with st.sidebar:
-    st.markdown(f"""
+    # st.text(st.session_state)
+    st.markdown("""
                 # About
                 This Chatbot Assistant that will help you
                   look for your desired properties.
@@ -179,17 +180,25 @@ with st.sidebar:
             - What does sales type mean?
             """
         )
+    st.caption('© 2023 ViewIt. All rights reserved.')
 
-    st.markdown('###### ©️ Hamdan Mohammad')
+
+# Welcome message
+if len(msgs.messages) == 0:
+    msgs.add_ai_message("Hi there! How can I help you today?")
 
 # Render current messages from StreamlitChatMessageHistory
 for msg in msgs.messages:
     st.chat_message(msg.type).write(msg.content)
 
+
 # If user inputs a new prompt, generate and draw a new response
 if user_input := st.chat_input('Ask away'):
-    st.chat_message("human", avatar="😃").write(user_input)
 
+    # Write user input
+    st.chat_message("user").write(user_input)
+
+    # Log user input to terminal
     user_log = f"\nUser [{datetime.now().strftime('%H:%M:%S')}]: " + user_input
     print(user_log)
 
@@ -198,16 +207,20 @@ if user_input := st.chat_input('Ask away'):
         try:
             response = agent.run(user_input)
 
+        # Handle the parsing error by omitting error from response
         except Exception as e:
             response = str(e)
             if response.startswith("Could not parse LLM output: `"):
                 response = response.removeprefix(
                     "Could not parse LLM output: `").removesuffix("`")
 
-        st.chat_message("ai", avatar="🤖").write(response)
+        # Write AI response
+        st.chat_message("assistant").write(response)
 
+    # Log AI response to terminal
     response_log = f"Bot [{datetime.now().strftime('%H:%M:%S')}]: " + response
     print(response_log)
+
 
 # # storing chat history
 # if 'generated' not in st.session_state:
@@ -242,7 +255,19 @@ if user_input := st.chat_input('Ask away'):
 #                 avatar_style='thumbs', key=str(i)+'_user')
 #         message(st.session_state['generated'][i], key=str(i))
 
+# Hide 'Made with Streamlit' from footer
+hide_streamlit_style = """
+            <style>
+            footer {visibility: hidden;}
+            </style>
+            """
+
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+
 st.write("---")
 st.caption(
-    """Made by Hamdan Mohammad. [GitHub](https://github.com/hamdan-27) | 
-    [Instagram](https://instagram/hxm.dxn_)""")
+    """Made by ViewIt. [GitHub](https://github.com/viewitai) | 
+    [Instagram](https://instagram/viewit.ae)""")
+st.caption('''By using this chatbot, you agree that the chatbot is provided on 
+           an "as is" basis and that we do not assume any liability for any errors, 
+           omissions or other issues that may arise from your use of the chatbot.''')
