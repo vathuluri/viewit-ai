@@ -1,15 +1,18 @@
 import openai
 import pandas as pd
+from prompts import *
 import streamlit as st
 from datetime import datetime
-# from langchain.agents import create_pandas_dataframe_agent
-from prompts import *
 from langchain import OpenAI, LLMChain
 from langchain.chat_models import ChatOpenAI
+from langchain.schema.messages import BaseMessage
 from langchain.memory import ConversationBufferMemory
-from langchain.tools.python.tool import PythonAstREPLTool
 from langchain.agents import ZeroShotAgent, AgentExecutor
+from langchain.tools.python.tool import PythonAstREPLTool
 from langchain.memory.chat_message_histories import StreamlitChatMessageHistory
+
+# C:\Users\ga201\anaconda3\envs\py310\Lib\site-packages\langchain\schema\messages.py
+# modified ai to assistant, human to user
 
 try:
     st.set_page_config(
@@ -18,6 +21,38 @@ try:
 except Exception as e:
     st.toast(str(e))
     st.toast("Psst. Try refreshing the page.", icon="👀")
+
+
+
+# Override default HumanMessage and AIMessage classes to modify 'type' attribute 
+# from 'human' and 'ai' to 'user' and 'assistant'.
+# This helps in displaying the default chat interface in streamlit
+class HumanMessage(BaseMessage):
+    """A Message from a human."""
+
+    example: bool = False
+    """Whether this Message is being passed in to the model as part of an example 
+        conversation.
+    """
+
+    @property
+    def type(self) -> str:
+        """Type of the message, used for serialization."""
+        return "user"
+
+
+class AIMessage(BaseMessage):
+    """A Message from an AI."""
+
+    example: bool = False
+    """Whether this Message is being passed in to the model as part of an example 
+        conversation.
+    """
+
+    @property
+    def type(self) -> str:
+        """Type of the message, used for serialization."""
+        return "assistant"
 
 
 @st.cache_data
@@ -79,8 +114,7 @@ def create_pandas_dataframe_agent(
 # VARIABLES
 MODEL_NAME = "gpt-4"
 TEMPERATURE = 0.1
-DATASET_NAME = 'reidin_new.csv'
-df = load_data(DATASET_NAME)
+df = load_data('reidin_new.csv')
 
 if MODEL_NAME == 'gpt-4':
     llm = ChatOpenAI(temperature=TEMPERATURE,
@@ -127,13 +161,10 @@ st.header('🕵️‍♂️ ViewIt AI | Your Reliable Property Assistant')
 st.text('Thousands of properties. One agent.')
 
 
-# if 'user_input' not in st.session_state:
-#     st.session_state['user_input'] = ''
 
 # def clear():
 #     st.session_state.user_input = st.session_state.widget
 #     st.session_state.widget = ''
-
 
 
 with st.expander("Show data"):
@@ -152,7 +183,8 @@ with st.expander("Show data"):
 
 # App Sidebar
 with st.sidebar:
-    # st.text(st.session_state)
+    # st.write(st.session_state)
+    # st.write(msgs.messages)
     st.markdown("""
                 # About
                 This Chatbot Assistant that will help you
@@ -189,6 +221,10 @@ if len(msgs.messages) == 0:
 
 # Render current messages from StreamlitChatMessageHistory
 for msg in msgs.messages:
+    # if msg.type == 'user':
+    #     avatar = '😃'
+    # elif msg.type == 'assistant':
+    #     avatar = '🦄'
     st.chat_message(msg.type).write(msg.content)
 
 
@@ -220,40 +256,7 @@ if user_input := st.chat_input('Ask away'):
     # Log AI response to terminal
     response_log = f"Bot [{datetime.now().strftime('%H:%M:%S')}]: " + response
     print(response_log)
-
-
-# # storing chat history
-# if 'generated' not in st.session_state:
-#     st.session_state['generated'] = []
-
-# if 'past' not in st.session_state:
-#     st.session_state['past'] = []
-
-# user_input = st.session_state['user_input']
-
-
-# Generate a response if input exists
-# if user_input:
-#     user_log = f"\nUser [{datetime.now().strftime('%H:%M:%S')}]: " + user_input
-#     print(user_log)
-
-#     with st.spinner('Thinking...'):
-#         # try:
-#             output = str(agent.run(user_input))
-#             response_log = f"Bot [{datetime.now().strftime('%H:%M:%S')}]: " + output
-#             print(response_log)
-#             # store chat
-#             st.session_state.past.append(user_input)
-#             st.session_state.generated.append(output)
-
-    # except:
-    #     st.write("⚠️ Oops! Looks like you ran into an error. Try asking another question or refresh the page.")
-
-# if st.session_state['generated']:
-#     for i in range(len(st.session_state['generated'])-1, -1, -1):
-#         message(st.session_state['past'][i], is_user=True,
-#                 avatar_style='thumbs', key=str(i)+'_user')
-#         message(st.session_state['generated'][i], key=str(i))
+    
 
 # Hide 'Made with Streamlit' from footer
 hide_streamlit_style = """
@@ -268,6 +271,7 @@ st.write("---")
 st.caption(
     """Made by ViewIt. [GitHub](https://github.com/viewitai) | 
     [Instagram](https://instagram/viewit.ae)""")
+
 st.caption('''By using this chatbot, you agree that the chatbot is provided on 
            an "as is" basis and that we do not assume any liability for any errors, 
            omissions or other issues that may arise from your use of the chatbot.''')
