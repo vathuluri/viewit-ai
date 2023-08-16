@@ -1,18 +1,17 @@
 import openai
+import random
 import pandas as pd
 from prompts import *
 import streamlit as st
 from datetime import datetime
 from langchain import OpenAI, LLMChain
 from langchain.chat_models import ChatOpenAI
-from langchain.schema.messages import BaseMessage
+from langchain.schema.messages import HumanMessage, AIMessage
 from langchain.memory import ConversationBufferMemory
 from langchain.agents import ZeroShotAgent, AgentExecutor
 from langchain.tools.python.tool import PythonAstREPLTool
 from langchain.memory.chat_message_histories import StreamlitChatMessageHistory
 
-# C:\Users\ga201\anaconda3\envs\py310\Lib\site-packages\langchain\schema\messages.py
-# modified ai to assistant, human to user
 
 try:
     st.set_page_config(
@@ -25,42 +24,19 @@ except Exception as e:
 
 
 # Override default HumanMessage and AIMessage classes to modify 'type' attribute 
-# from 'human' and 'ai' to 'user' and 'assistant'.
-# This helps in displaying the default chat interface in streamlit
-class HumanMessage(BaseMessage):
-    """A Message from a human."""
+# from 'human' and 'ai' to 'user' and 'assistant'. This helps in displaying the 
+# default chat interface in streamlit
 
-    example: bool = False
-    """Whether this Message is being passed in to the model as part of an example 
-        conversation.
-    """
-
-    @property
-    def type(self) -> str:
-        """Type of the message, used for serialization."""
-        return "user"
-
-
-class AIMessage(BaseMessage):
-    """A Message from an AI."""
-
-    example: bool = False
-    """Whether this Message is being passed in to the model as part of an example 
-        conversation.
-    """
-
-    @property
-    def type(self) -> str:
-        """Type of the message, used for serialization."""
-        return "assistant"
+HumanMessage.type = 'user'
+AIMessage.type = 'assistant'
 
 
 @st.cache_data
 def load_data(filename) -> pd.DataFrame:
     df = pd.read_csv(f"data/{filename}")
 
-    df['Date'] = pd.to_datetime(df['Date']).dt.date
-
+    df['Date'] = pd.to_datetime(df['Date'])
+    # .dt.date
     return df
 
 
@@ -72,7 +48,6 @@ def create_pandas_dataframe_agent(
     suffix: str,
     format_instructions: str,
     verbose: bool,
-    # memory: ConversationBufferMemory = ConversationBufferMemory(memory_key="chat_history")
     memory
 ) -> AgentExecutor:
     """Construct a pandas agent from an LLM and dataframe."""
@@ -114,6 +89,15 @@ def create_pandas_dataframe_agent(
 MODEL_NAME = "gpt-4"
 TEMPERATURE = 0.1
 df = load_data('reidin_new2.csv')
+spinner_texts = [
+    'Thinking...',
+    'Performing Analysis...',
+    'Contacting the hivemind...',
+    'Asking my neighbor...',
+    'Preparing your answer...',
+    'Counting buildings...',
+    'Pretending to be human...'
+]
 
 if MODEL_NAME == 'gpt-4':
     llm = ChatOpenAI(temperature=TEMPERATURE,
@@ -133,6 +117,12 @@ openai.api_key = st.secrets['api_key']
 msgs = StreamlitChatMessageHistory(key="langchain_messages")
 memory = ConversationBufferMemory(chat_memory=msgs, memory_key="chat_history")
 
+
+data_option = st.radio('Choose data', ['Reidin (original)', 'Reidin (Location-SubLocation swap)'])
+if data_option == 'Reidin (original)':
+    df = load_data('reidin_new2.csv')
+elif data_option == 'Reidin (Location-SubLocation swap)':
+    df = load_data('reidin_loc_swap.csv')
 
 # AGENT CREATION HAPPENS HERE
 agent = create_pandas_dataframe_agent(
@@ -155,16 +145,13 @@ with col2:
 
 
 # App Title
-# st.title('ViewIt.AI')
 st.header('🕵️‍♂️ ViewIt AI | Your Reliable Property Assistant')
 st.text('Thousands of properties. One agent.')
-
 
 
 # def clear():
 #     st.session_state.user_input = st.session_state.widget
 #     st.session_state.widget = ''
-
 
 with st.expander("Show data"):
     st.write(f"Total rows: {len(df)}")
@@ -179,6 +166,7 @@ with st.expander("Show data"):
 
 # if st.button('Clear session state'):
 #     clear_session_states()
+
 
 # App Sidebar
 with st.sidebar:
@@ -238,7 +226,7 @@ if user_input := st.chat_input('Ask away'):
     print(user_log)
 
     # Note: new messages are saved to history automatically by Langchain during run
-    with st.spinner('Thinking...'):
+    with st.spinner(random.choice(spinner_texts)):
         try:
             response = agent.run(user_input)
 
@@ -248,6 +236,7 @@ if user_input := st.chat_input('Ask away'):
             if response.startswith("Could not parse LLM output: `"):
                 response = response.removeprefix(
                     "Could not parse LLM output: `").removesuffix("`")
+            st.toast(str(e), icon='⚠️')
 
         # Write AI response
         st.chat_message("assistant").write(response)
