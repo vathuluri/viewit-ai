@@ -4,6 +4,7 @@ markdown-it-py
 matplotlib
 numpy
 oauthlib
+openai
 pandas
 Pillow
 plotly
