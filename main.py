@@ -59,7 +59,7 @@ class AIMessage(BaseMessage):
 def load_data(filename) -> pd.DataFrame:
     df = pd.read_csv(f"data/{filename}")
 
-    df['Date'] = pd.to_datetime(df['Date'], dayfirst=True).dt.date
+    df['Date'] = pd.to_datetime(df['Date']).dt.date
 
     return df
 
