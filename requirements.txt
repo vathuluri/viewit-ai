@@ -1,10 +1,10 @@
+openai==0.27.8
 langchain
 Markdown
 markdown-it-py
 matplotlib
 numpy
 oauthlib
-openai==0.27.8
 pandas
 Pillow
 plotly
