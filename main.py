@@ -118,6 +118,23 @@ msgs = StreamlitChatMessageHistory(key="langchain_messages")
 memory = ConversationBufferMemory(chat_memory=msgs, memory_key="chat_history")
 
 
+# USER INTERFACE
+
+# Add Viewit logo to the center of page
+col1, col2, col3 = st.columns(3)
+with col2:
+    st.image("https://i.postimg.cc/Nfz5nZ8G/Logo.png", width=200)
+
+
+# App Title
+st.header('🕵️‍♂️ ViewIt AI | Your Reliable Property Assistant')
+st.text('Thousands of properties. One agent.')
+
+
+# def clear():
+#     st.session_state.user_input = st.session_state.widget
+#     st.session_state.widget = ''
+
 data_option = st.radio('Choose data', ['Reidin (original)', 'Reidin (Location-SubLocation swap)'])
 if data_option == 'Reidin (original)':
     df = load_data('reidin_new2.csv')
@@ -136,22 +153,6 @@ agent = create_pandas_dataframe_agent(
 )
 
 
-# USER INTERFACE
-
-# Add Viewit logo to the center of page
-col1, col2, col3 = st.columns(3)
-with col2:
-    st.image("https://i.postimg.cc/Nfz5nZ8G/Logo.png", width=200)
-
-
-# App Title
-st.header('🕵️‍♂️ ViewIt AI | Your Reliable Property Assistant')
-st.text('Thousands of properties. One agent.')
-
-
-# def clear():
-#     st.session_state.user_input = st.session_state.widget
-#     st.session_state.widget = ''
 
 with st.expander("Show data"):
     st.write(f"Total rows: {len(df)}")
