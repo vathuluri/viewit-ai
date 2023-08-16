@@ -113,7 +113,7 @@ def create_pandas_dataframe_agent(
 # VARIABLES
 MODEL_NAME = "gpt-4"
 TEMPERATURE = 0.1
-df = load_data('reidin_new.csv')
+df = load_data('reidin_new2.csv')
 
 if MODEL_NAME == 'gpt-4':
     llm = ChatOpenAI(temperature=TEMPERATURE,
