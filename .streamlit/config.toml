@@ -9,4 +9,4 @@ secondaryBackgroundColor = "#062363"
 # Level of logging: 'error', 'warning', 'info', or 'debug'.
 
 # Default: 'info'
-level = "warning"
+level = "info"
