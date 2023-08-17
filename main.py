@@ -1,3 +1,4 @@
+import time
 import openai
 import random
 import pandas as pd
@@ -6,10 +7,10 @@ import streamlit as st
 from datetime import datetime
 from langchain import OpenAI, LLMChain
 from langchain.chat_models import ChatOpenAI
-from langchain.schema.messages import HumanMessage, AIMessage
 from langchain.memory import ConversationBufferMemory
 from langchain.agents import ZeroShotAgent, AgentExecutor
 from langchain.tools.python.tool import PythonAstREPLTool
+from langchain.schema.messages import HumanMessage, AIMessage
 from langchain.memory.chat_message_histories import StreamlitChatMessageHistory
 
 
@@ -48,7 +49,8 @@ def create_pandas_dataframe_agent(
     suffix: str,
     format_instructions: str,
     verbose: bool,
-    memory
+    memory,
+    **kwargs
 ) -> AgentExecutor:
     """Construct a pandas agent from an LLM and dataframe."""
 
@@ -81,14 +83,15 @@ def create_pandas_dataframe_agent(
         agent=agent,
         tools=tools,
         verbose=verbose,
-        memory=memory
+        memory=memory,
+        **kwargs
     )
 
 
 # VARIABLES
 MODEL_NAME = "gpt-4"
 TEMPERATURE = 0.1
-df = load_data('reidin_new2.csv')
+df = load_data('reidin_new.csv')
 spinner_texts = [
     'Thinking...',
     'Performing Analysis...',
@@ -96,7 +99,8 @@ spinner_texts = [
     'Asking my neighbor...',
     'Preparing your answer...',
     'Counting buildings...',
-    'Pretending to be human...'
+    'Pretending to be human...',
+    'Becoming sentient...'
 ]
 
 if MODEL_NAME == 'gpt-4':
@@ -137,9 +141,10 @@ st.text('Thousands of properties. One agent.')
 
 data_option = st.radio('Choose data', ['Reidin (original)', 'Reidin (Location-SubLocation swap)'])
 if data_option == 'Reidin (original)':
-    df = load_data('reidin_new2.csv')
+    df = load_data('reidin_new.csv')
 elif data_option == 'Reidin (Location-SubLocation swap)':
     df = load_data('reidin_loc_swap.csv')
+
 
 # AGENT CREATION HAPPENS HERE
 agent = create_pandas_dataframe_agent(
@@ -149,7 +154,8 @@ agent = create_pandas_dataframe_agent(
     suffix=SUFFIX,
     format_instructions=FORMAT_INSTRUCTIONS,
     verbose=True,
-    memory=memory
+    memory=memory,
+    handle_parsing_errors=True
 )
 
 
@@ -240,7 +246,17 @@ if user_input := st.chat_input('Ask away'):
             st.toast(str(e), icon='⚠️')
 
         # Write AI response
-        st.chat_message("assistant").write(response)
+        with st.chat_message("assistant"):
+            message_placeholder = st.empty()
+            full_response = ""
+
+            # Simulate stream of response with milliseconds delay
+            for chunk in response.split():
+                full_response += chunk + " "
+                time.sleep(0.05)
+                # Add a blinking cursor to simulate typing
+                message_placeholder.markdown(full_response + "▌")
+            message_placeholder.markdown(full_response)
 
     # Log AI response to terminal
     response_log = f"Bot [{datetime.now().strftime('%H:%M:%S')}]: " + response
