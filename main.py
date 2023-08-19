@@ -16,16 +16,16 @@ from langchain.memory.chat_message_histories import StreamlitChatMessageHistory
 
 try:
     st.set_page_config(
-        page_title="Viewit.AI | Property Analyst", page_icon="🌇")
+        page_title="Viewit.AI | Property Analyst", page_icon="🌇",
+        initial_sidebar_state='collapsed')
 
 except Exception as e:
     st.toast(str(e))
     st.toast("Psst. Try refreshing the page.", icon="👀")
 
 
-
-# Override default HumanMessage and AIMessage classes to modify 'type' attribute 
-# from 'human' and 'ai' to 'user' and 'assistant'. This helps in displaying the 
+# Override default HumanMessage and AIMessage classes to modify 'type' attribute
+# from 'human' and 'ai' to 'user' and 'assistant'. This helps in displaying the
 # default chat interface in streamlit
 
 HumanMessage.type = 'user'
@@ -36,8 +36,7 @@ AIMessage.type = 'assistant'
 def load_data(filename) -> pd.DataFrame:
     df = pd.read_csv(f"data/{filename}")
 
-    df['Date'] = pd.to_datetime(df['Date'])
-    # .dt.date
+    df['Date'] = pd.to_datetime(df['Date'], format="%d-%m-%Y", dayfirst=True)
     return df
 
 
@@ -139,7 +138,8 @@ st.text('Thousands of properties. One agent.')
 #     st.session_state.user_input = st.session_state.widget
 #     st.session_state.widget = ''
 
-data_option = st.radio('Choose data', ['Reidin (original)', 'Reidin (Location-SubLocation swap)'])
+data_option = st.radio('Choose data', [
+                       'Reidin (original)', 'Reidin (Location-SubLocation swap)'], horizontal=True)
 if data_option == 'Reidin (original)':
     df = load_data('reidin_new.csv')
 elif data_option == 'Reidin (Location-SubLocation swap)':
@@ -157,7 +157,6 @@ agent = create_pandas_dataframe_agent(
     memory=memory,
     handle_parsing_errors=True
 )
-
 
 
 with st.expander("Show data"):
@@ -181,8 +180,8 @@ with st.sidebar:
     # st.write(msgs.messages)
     st.markdown("""
                 # About
-                This Chatbot Assistant that will help you
-                  look for your desired properties.
+                This Chatbot Assistant that will help you out with all your 
+                real estate queries.
                 
                 # How to use
                 Simply enter your query in the text field and the assistant 
@@ -196,7 +195,7 @@ with st.sidebar:
                 """)
 
     with st.expander("Commonly asked questions"):
-        st.write(
+        st.info(
             """
             - Give me a summary of all properties, what percentage are apartments?
             - Which location has the largest number of sales?
@@ -261,7 +260,7 @@ if user_input := st.chat_input('Ask away'):
     # Log AI response to terminal
     response_log = f"Bot [{datetime.now().strftime('%H:%M:%S')}]: " + response
     print(response_log)
-    
+
 
 # Hide 'Made with Streamlit' from footer
 hide_streamlit_style = """
@@ -274,9 +273,10 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 st.write("---")
 st.caption(
-    """Made by ViewIt. [GitHub](https://github.com/viewitai) | 
-    [Instagram](https://instagram/viewit.ae)""")
+    """Made by ViewIt. [😼 GitHub](https://github.com/viewitai) | 
+    [📸 Instagram](https://instagram/viewit.ae) | [𝕏 Twitter](https://twitter.com/aeviewit)""")
 
 st.caption('''By using this chatbot, you agree that the chatbot is provided on 
-           an "as is" basis and that we do not assume any liability for any errors, 
-           omissions or other issues that may arise from your use of the chatbot.''')
+           an "as is" basis and that we do not assume any liability for any 
+           errors, omissions or other issues that may arise from your use of 
+           the chatbot.''')
