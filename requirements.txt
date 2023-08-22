@@ -7,6 +7,7 @@ oauthlib
 openai==0.27.8
 pandas
 Pillow
+pip==23.2.1
 plotly
 promise
 proto-plus==1.22.2
@@ -17,3 +18,4 @@ streamlit
 streamlit-authenticator
 tabulate
 tiktoken
+trubrics
