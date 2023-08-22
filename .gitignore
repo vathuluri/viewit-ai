@@ -2,6 +2,7 @@ test.ipynb
 testapp.py
 oldmodel.py
 newmodel.py
+falcon.py
 chat_pandas_df.py
 full_prompt.txt
 data/*.xlsx

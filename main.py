@@ -12,7 +12,13 @@ from langchain.agents import ZeroShotAgent, AgentExecutor
 from langchain.tools.python.tool import PythonAstREPLTool
 from langchain.schema.messages import HumanMessage, AIMessage
 from langchain.memory.chat_message_histories import StreamlitChatMessageHistory
+from trubrics.integrations.streamlit import FeedbackCollector
 
+collector = FeedbackCollector(
+    component_name="default",
+    email=st.secrets["TRUBRICS_EMAIL"],
+    password=st.secrets["TRUBRICS_PASSWORD"],
+)
 
 try:
     st.set_page_config(
@@ -92,14 +98,14 @@ MODEL_NAME = "gpt-4"
 TEMPERATURE = 0.1
 df = load_data('reidin_new.csv')
 spinner_texts = [
-    'Thinking...',
-    'Performing Analysis...',
-    'Contacting the hivemind...',
-    'Asking my neighbor...',
-    'Preparing your answer...',
-    'Counting buildings...',
-    'Pretending to be human...',
-    'Becoming sentient...'
+    '🧠 Thinking...',
+    '📈 Performing Analysis...',
+    '👾 Contacting the hivemind...',
+    '🏠 Asking my neighbor...',
+    '🍳 Preparing your answer...',
+    '🏢 Counting buildings...',
+    '👨 Pretending to be human...',
+    '👽 Becoming sentient...'
 ]
 
 if MODEL_NAME == 'gpt-4':
@@ -220,6 +226,16 @@ for msg in msgs.messages:
     #     avatar = '🦄'
     st.chat_message(msg.type).write(msg.content)
 
+    if msg.type == 'assistant':
+        # Feedback Component
+        collector.st_feedback(
+                    feedback_type="thumbs",
+                    model="test-model",
+                    open_feedback_label="How did our chatbot perform?",
+                    metadata={'forResponse': msg.content},
+                    key=msg.content.replace(" ", '')[:15]
+                )
+
 
 # If user inputs a new prompt, generate and draw a new response
 if user_input := st.chat_input('Ask away'):
@@ -243,6 +259,7 @@ if user_input := st.chat_input('Ask away'):
                 response = response.removeprefix(
                     "Could not parse LLM output: `").removesuffix("`")
             st.toast(str(e), icon='⚠️')
+            print(str(e))
 
         # Write AI response
         with st.chat_message("assistant"):
@@ -260,6 +277,7 @@ if user_input := st.chat_input('Ask away'):
     # Log AI response to terminal
     response_log = f"Bot [{datetime.now().strftime('%H:%M:%S')}]: " + response
     print(response_log)
+    st.experimental_rerun()
 
 
 # Hide 'Made with Streamlit' from footer
