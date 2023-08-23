@@ -1,8 +1,17 @@
 # ViewIt Chatbot
 
-This chatbot now reads tabular data directly, for question answering.
+_The complete AI real estate agent, and more._
 
-Check the guide on [how to clone a repository.](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)
+![ViewIt.AI Logo](https://i.postimg.cc/Nfz5nZ8G/Logo.png)
+
+#### TODO:
+- Add feeback component
+- Add user authentication component
+- Maybe a separate page for detailed feedback (requires email or authentication)
+- Optimize streaming messages
+- Google Places integration
+
+---
 
 _It is recommmended to create a virtual environment and install the requirements specified in the `requirements.txt` file in the following manner:_
 
