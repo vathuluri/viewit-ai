@@ -5,21 +5,16 @@ import pandas as pd
 from prompts import *
 import streamlit as st
 from datetime import datetime
-from langchain import OpenAI, LLMChain
+from langchain import LLMChain
 from langchain.chat_models import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
 from langchain.agents import ZeroShotAgent, AgentExecutor
 from langchain.tools.python.tool import PythonAstREPLTool
+from trubrics.integrations.streamlit import FeedbackCollector
 from langchain.schema.messages import HumanMessage, AIMessage
 from langchain.memory.chat_message_histories import StreamlitChatMessageHistory
-from trubrics.integrations.streamlit import FeedbackCollector
 
-collector = FeedbackCollector(
-    component_name="default",
-    email=st.secrets["TRUBRICS_EMAIL"],
-    password=st.secrets["TRUBRICS_PASSWORD"],
-)
-
+# Set page launch configurations
 try:
     st.set_page_config(
         page_title="Viewit.AI | Property Analyst", page_icon="🌇",
@@ -30,10 +25,8 @@ except Exception as e:
     st.toast("Psst. Try refreshing the page.", icon="👀")
 
 
-# Override default HumanMessage and AIMessage classes to modify 'type' attribute
-# from 'human' and 'ai' to 'user' and 'assistant'. This helps in displaying the
-# default chat interface in streamlit
-
+# Override default HumanMessage and AIMessage's 'type' attribute from 'human' and
+# 'ai' to 'user' and 'assistant'. This displays the default chat interface in streamlit
 HumanMessage.type = 'user'
 AIMessage.type = 'assistant'
 
@@ -41,22 +34,21 @@ AIMessage.type = 'assistant'
 @st.cache_data
 def load_data(filename) -> pd.DataFrame:
     df = pd.read_csv(f"data/{filename}")
-
     df['Date'] = pd.to_datetime(df['Date'], format="%d-%m-%Y", dayfirst=True)
+
     return df
 
 
 # @st.cache_resource
-def create_pandas_dataframe_agent(
-    llm,
-    df: pd.DataFrame,
-    prefix: str,
-    suffix: str,
-    format_instructions: str,
-    verbose: bool,
-    memory,
-    **kwargs
-) -> AgentExecutor:
+def create_pandas_dataframe_agent(llm,
+                                  df: pd.DataFrame,
+                                  prefix: str,
+                                  suffix: str,
+                                  format_instructions: str,
+                                  verbose: bool,
+                                  memory,
+                                  **kwargs
+                                  ) -> AgentExecutor:
     """Construct a pandas agent from an LLM and dataframe."""
 
     if not isinstance(df, pd.DataFrame):
@@ -94,9 +86,17 @@ def create_pandas_dataframe_agent(
 
 
 # VARIABLES
-MODEL_NAME = "gpt-4"
 TEMPERATURE = 0.1
 df = load_data('reidin_new.csv')
+
+llm = ChatOpenAI(temperature=TEMPERATURE,
+                 model_name='gpt-4',
+                 openai_api_key=st.secrets['api_key'])
+
+# llm = OpenAI(temperature=TEMPERATURE,
+#                 model_name=MODEL_NAME,
+#                 openai_api_key=st.secrets['api_key'])
+
 spinner_texts = [
     '🧠 Thinking...',
     '📈 Performing Analysis...',
@@ -108,14 +108,6 @@ spinner_texts = [
     '👽 Becoming sentient...'
 ]
 
-if MODEL_NAME == 'gpt-4':
-    llm = ChatOpenAI(temperature=TEMPERATURE,
-                     model_name=MODEL_NAME,
-                     openai_api_key=st.secrets['api_key'])
-else:
-    llm = OpenAI(temperature=TEMPERATURE,
-                 model_name=MODEL_NAME,
-                 openai_api_key=st.secrets['api_key'])
 
 # ViewIt OpenAI API key
 openai.organization = st.secrets['org']
@@ -127,9 +119,9 @@ msgs = StreamlitChatMessageHistory(key="langchain_messages")
 memory = ConversationBufferMemory(chat_memory=msgs, memory_key="chat_history")
 
 
-# USER INTERFACE
+# APP INTERFACE START #
 
-# Add Viewit logo to the center of page
+# Add Viewit logo image to the center of page
 col1, col2, col3 = st.columns(3)
 with col2:
     st.image("https://i.postimg.cc/Nfz5nZ8G/Logo.png", width=200)
@@ -137,13 +129,10 @@ with col2:
 
 # App Title
 st.header('🕵️‍♂️ ViewIt AI | Your Reliable Property Assistant')
-st.text('Thousands of properties. One agent.')
+st.text('Thousands of properties. One AI. More than an agent.')
 
 
-# def clear():
-#     st.session_state.user_input = st.session_state.widget
-#     st.session_state.widget = ''
-
+# Radio button to switch between data variants
 data_option = st.radio('Choose data', [
                        'Reidin (original)', 'Reidin (Location-SubLocation swap)'], horizontal=True)
 if data_option == 'Reidin (original)':
@@ -164,7 +153,7 @@ agent = create_pandas_dataframe_agent(
     handle_parsing_errors=True
 )
 
-
+# Show data that is being used
 with st.expander("Show data"):
     st.write(f"Total rows: {len(df)}")
     st.dataframe(df)
@@ -172,32 +161,33 @@ with st.expander("Show data"):
 
 # App Sidebar
 with st.sidebar:
-    # st.write(st.session_state)
-    # st.write(msgs.messages)
+    # st.write("session state msgs: ", st.session_state.langchain_messages)
+    # st.write("StreamlitChatMessageHistory: ", msgs.messages)
 
-    # # Clear Session State Variables
-    # def clear_session_states():
-    #     for key in st.session_state.keys():
-    #         st.session_state[key] = ''
+    # Clear Chat History (EXPERIMENTAL)
+    # FIXME: Users can just clear convo before hitting the max messages and keep using it
+    def clear_chat_history():
+        st.session_state['langchain_messages'] = [
+            AIMessage(content="Hi there! How can I help you today?")]
+        st.experimental_rerun()
 
+    if st.button('Clear chat history'):
+        clear_chat_history()
 
-    # if st.button('Clear session state'):
-    #     clear_session_states()
-
+    # Description
     st.markdown("""
                 # About
-                This Chatbot Assistant that will help you out with all your 
-                real estate queries.
+                Introducing ViewIt.AI, a Real Estate Chatbot Assistant will help 
+                you out with all your real estate queries.
                 
                 # How to use
-                Simply enter your query in the text field and the assistant 
-                will help you out.
+                Simply enter your query in the text field and have a chat with
+                your virtual agent.
 
                 # Data
                 Uses Reidin Property Data.
                 
                 Source: http://reidin.com
-
                 """)
 
     with st.expander("Commonly asked questions"):
@@ -216,37 +206,48 @@ with st.sidebar:
 
 # Welcome message
 if len(msgs.messages) == 0:
-    msgs.add_ai_message("Hi there! How can I help you today?")
+    msgs.add_ai_message(
+        "Welcome to ViewIt! I'm your virtual assistant. How can I help you today?")
 
+feedback = None
 # Render current messages from StreamlitChatMessageHistory
-for msg in msgs.messages:
-    # if msg.type == 'user':
-    #     avatar = '😃'
-    # elif msg.type == 'assistant':
-    #     avatar = '🦄'
+for n, msg in enumerate(msgs.messages):
+
     st.chat_message(msg.type).write(msg.content)
 
-    if msg.type == 'assistant':
-        # Feedback Component
-        collector.st_feedback(
-                    feedback_type="thumbs",
-                    model="test-model",
-                    open_feedback_label="How did our chatbot perform?",
-                    metadata={'forResponse': msg.content},
-                    # key=msg.content.replace(" ", '')[:15]
-                )
+    # Add feedback component for every AI response
+    if msg.type == 'assistant' and msg.content != "Hi there! How can I help you today?":
+
+        collector = FeedbackCollector(
+            component_name="default",
+            email=st.secrets["TRUBRICS_EMAIL"],
+            password=st.secrets["TRUBRICS_PASSWORD"],
+        )
+
+        feedback = collector.st_feedback(
+            feedback_type="thumbs",
+            model='testmodel2',
+            open_feedback_label="How is our chatbot performing?",
+            metadata={"chat": msg.content},
+            user_id=None,   # TODO: Add this later on when implementing authentication
+            align="flex-end",
+            single_submit=True,
+            key=f"feedback_{int(n/2)}",
+        )
 
 
 # Maximum allowed messages
 max_messages = (
-    18  # Counting both user and assistant messages, so 9-10 iterations of conversation
+    21  # Counting both user and assistant messages including the welcome message,
+        # so 10 iterations of conversation
 )
 
+# Display modal and prevent usage after limit hit
 if len(msgs.messages) >= max_messages:
     st.info(
-        """Notice: The maximum message limit for this demo version has been reached. 
-        We value your interest! We hope you liked what we're building. Please make 
-        an account to continure using, or check our available pricing plans 
+        """**Notice:** The maximum message limit for this demo version has been reached. 
+        We value your interest! Like what we're building? Please create 
+        an account to continue using, or check our available pricing plans 
         [here](https://viewit.ai/)."""
     )
 
@@ -258,7 +259,8 @@ else:
         st.chat_message("user").write(user_input)
 
         # Log user input to terminal
-        user_log = f"\nUser [{datetime.now().strftime('%H:%M:%S')}]: " + user_input
+        user_log = f"\nUser [{datetime.now().strftime('%H:%M:%S')}]: " + \
+            user_input
         print(user_log)
 
         # Note: new messages are saved to history automatically by Langchain during run
@@ -283,13 +285,14 @@ else:
                 # Simulate stream of response with milliseconds delay
                 for chunk in response.split():
                     full_response += chunk + " "
-                    time.sleep(0.05)
+                    time.sleep(0.02)
                     # Add a blinking cursor to simulate typing
                     message_placeholder.markdown(full_response + "▌")
                 message_placeholder.markdown(full_response)
 
         # Log AI response to terminal
-        response_log = f"Bot [{datetime.now().strftime('%H:%M:%S')}]: " + response
+        response_log = f"Bot [{datetime.now().strftime('%H:%M:%S')}]: " + \
+            response
         print(response_log)
         st.experimental_rerun()
 
@@ -303,8 +306,9 @@ hide_streamlit_style = """
 
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
+# FOOTER #
 st.write("---")
-st.caption("Made by ViewIt.") 
+st.caption("Made by ViewIt.")
 st.write("""[😼 GitHub](https://github.com/viewitai) • 
     [📸 Instagram](https://instagram/viewit.ae) • [𝕏 Twitter](https://twitter.com/aeviewit)""")
 
