@@ -216,7 +216,7 @@ for n, msg in enumerate(msgs.messages):
     st.chat_message(msg.type).write(msg.content)
 
     # Add feedback component for every AI response
-    if msg.type == 'assistant' and msg.content != "Hi there! How can I help you today?":
+    if msg.type == 'assistant' and msg.content != "Welcome to ViewIt! I'm your virtual assistant. How can I help you today?":
 
         collector = FeedbackCollector(
             component_name="default",
