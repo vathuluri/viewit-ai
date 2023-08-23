@@ -170,20 +170,20 @@ with st.expander("Show data"):
     st.dataframe(df)
 
 
-# # Clear Session State Variables
-# def clear_session_states():
-#     for key in st.session_state.keys():
-#         st.session_state[key] = ''
-
-
-# if st.button('Clear session state'):
-#     clear_session_states()
-
-
 # App Sidebar
 with st.sidebar:
     # st.write(st.session_state)
     # st.write(msgs.messages)
+
+    # # Clear Session State Variables
+    # def clear_session_states():
+    #     for key in st.session_state.keys():
+    #         st.session_state[key] = ''
+
+
+    # if st.button('Clear session state'):
+    #     clear_session_states()
+
     st.markdown("""
                 # About
                 This Chatbot Assistant that will help you out with all your 
@@ -233,51 +233,65 @@ for msg in msgs.messages:
                     model="test-model",
                     open_feedback_label="How did our chatbot perform?",
                     metadata={'forResponse': msg.content},
-                    key=msg.content.replace(" ", '')[:15]
+                    # key=msg.content.replace(" ", '')[:15]
                 )
 
 
-# If user inputs a new prompt, generate and draw a new response
-if user_input := st.chat_input('Ask away'):
+# Maximum allowed messages
+max_messages = (
+    18  # Counting both user and assistant messages, so 9-10 iterations of conversation
+)
 
-    # Write user input
-    st.chat_message("user").write(user_input)
+if len(msgs.messages) >= max_messages:
+    st.info(
+        """Notice: The maximum message limit for this demo version has been reached. 
+        We value your interest! We hope you liked what we're building. Please make 
+        an account to continure using, or check our available pricing plans 
+        [here](https://viewit.ai/)."""
+    )
 
-    # Log user input to terminal
-    user_log = f"\nUser [{datetime.now().strftime('%H:%M:%S')}]: " + user_input
-    print(user_log)
+else:
+    # If user inputs a new prompt, generate and draw a new response
+    if user_input := st.chat_input('Ask away'):
 
-    # Note: new messages are saved to history automatically by Langchain during run
-    with st.spinner(random.choice(spinner_texts)):
-        try:
-            response = agent.run(user_input)
+        # Write user input
+        st.chat_message("user").write(user_input)
 
-        # Handle the parsing error by omitting error from response
-        except Exception as e:
-            response = str(e)
-            if response.startswith("Could not parse LLM output: `"):
-                response = response.removeprefix(
-                    "Could not parse LLM output: `").removesuffix("`")
-            st.toast(str(e), icon='⚠️')
-            print(str(e))
+        # Log user input to terminal
+        user_log = f"\nUser [{datetime.now().strftime('%H:%M:%S')}]: " + user_input
+        print(user_log)
 
-        # Write AI response
-        with st.chat_message("assistant"):
-            message_placeholder = st.empty()
-            full_response = ""
+        # Note: new messages are saved to history automatically by Langchain during run
+        with st.spinner(random.choice(spinner_texts)):
+            try:
+                response = agent.run(user_input)
 
-            # Simulate stream of response with milliseconds delay
-            for chunk in response.split():
-                full_response += chunk + " "
-                time.sleep(0.05)
-                # Add a blinking cursor to simulate typing
-                message_placeholder.markdown(full_response + "▌")
-            message_placeholder.markdown(full_response)
+            # Handle the parsing error by omitting error from response
+            except Exception as e:
+                response = str(e)
+                if response.startswith("Could not parse LLM output: `"):
+                    response = response.removeprefix(
+                        "Could not parse LLM output: `").removesuffix("`")
+                st.toast(str(e), icon='⚠️')
+                print(str(e))
 
-    # Log AI response to terminal
-    response_log = f"Bot [{datetime.now().strftime('%H:%M:%S')}]: " + response
-    print(response_log)
-    st.experimental_rerun()
+            # Write AI response
+            with st.chat_message("assistant"):
+                message_placeholder = st.empty()
+                full_response = ""
+
+                # Simulate stream of response with milliseconds delay
+                for chunk in response.split():
+                    full_response += chunk + " "
+                    time.sleep(0.05)
+                    # Add a blinking cursor to simulate typing
+                    message_placeholder.markdown(full_response + "▌")
+                message_placeholder.markdown(full_response)
+
+        # Log AI response to terminal
+        response_log = f"Bot [{datetime.now().strftime('%H:%M:%S')}]: " + response
+        print(response_log)
+        st.experimental_rerun()
 
 
 # Hide 'Made with Streamlit' from footer
@@ -290,9 +304,9 @@ hide_streamlit_style = """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 st.write("---")
-st.caption(
-    """Made by ViewIt. [😼 GitHub](https://github.com/viewitai) | 
-    [📸 Instagram](https://instagram/viewit.ae) | [𝕏 Twitter](https://twitter.com/aeviewit)""")
+st.caption("Made by ViewIt.") 
+st.write("""[😼 GitHub](https://github.com/viewitai) • 
+    [📸 Instagram](https://instagram/viewit.ae) • [𝕏 Twitter](https://twitter.com/aeviewit)""")
 
 st.caption('''By using this chatbot, you agree that the chatbot is provided on 
            an "as is" basis and that we do not assume any liability for any 

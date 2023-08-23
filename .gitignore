@@ -3,7 +3,8 @@ testapp.py
 oldmodel.py
 newmodel.py
 falcon.py
-chat_pandas_df.py
+test2.py
+test3.py
 full_prompt.txt
 data/*.xlsx
 .streamlit/secrets.toml
