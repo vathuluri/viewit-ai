@@ -5,7 +5,6 @@ _The complete AI real estate agent, and more._
 ![ViewIt.AI Logo](https://i.postimg.cc/Nfz5nZ8G/Logo.png)
 
 #### TODO:
-- Add feeback component
 - Add user authentication component
 - Maybe a separate page for detailed feedback (requires email or authentication)
 - Optimize streaming messages
