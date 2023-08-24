@@ -18,7 +18,14 @@ from langchain.memory.chat_message_histories import StreamlitChatMessageHistory
 try:
     st.set_page_config(
         page_title="Viewit.AI | Property Analyst", page_icon="🌇",
-        initial_sidebar_state='collapsed')
+        initial_sidebar_state='collapsed',
+        menu_items={'Report a bug': 'https://viewit-ai-chatbot.streamlit.app/feedback',
+                    'About': """### Made by ViewIt
+Visit us: https://viewit.ae
+
+Join the ViewIt.AI waitlist: https://viewit.ai
+
+© 2023 ViewIt. All rights reserved."""})
 
 except Exception as e:
     st.toast(str(e))
@@ -164,16 +171,6 @@ with st.sidebar:
     # st.write("session state msgs: ", st.session_state.langchain_messages)
     # st.write("StreamlitChatMessageHistory: ", msgs.messages)
 
-    # Clear Chat History (EXPERIMENTAL)
-    # FIXME: Users can just clear convo before hitting the max messages and keep using it
-    def clear_chat_history():
-        st.session_state['langchain_messages'] = [
-            AIMessage(content="Hi there! How can I help you today?")]
-        st.experimental_rerun()
-
-    if st.button('Clear chat history'):
-        clear_chat_history()
-
     # Description
     st.markdown("""
                 # About
@@ -219,14 +216,14 @@ for n, msg in enumerate(msgs.messages):
     if msg.type == 'assistant' and msg.content != "Welcome to ViewIt! I'm your virtual assistant. How can I help you today?":
 
         collector = FeedbackCollector(
-            component_name="default",
+            component_name="chat response",
             email=st.secrets["TRUBRICS_EMAIL"],
             password=st.secrets["TRUBRICS_PASSWORD"],
         )
 
         feedback = collector.st_feedback(
             feedback_type="thumbs",
-            model='testmodel2',
+            model='gpt-4',
             open_feedback_label="How is our chatbot performing?",
             metadata={"chat": msg.content},
             user_id=None,   # TODO: Add this later on when implementing authentication
@@ -298,20 +295,60 @@ else:
 
 
 # Hide 'Made with Streamlit' from footer
-hide_streamlit_style = """
-            <style>
-            footer {visibility: hidden;}
-            </style>
-            """
+def hide_made_by_streamlit():
+    hide_streamlit_style = """
+                <style>
+                footer {visibility: hidden;}
+                </style>
+                """
 
-st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+    st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+
+
+hide_made_by_streamlit()
 
 # FOOTER #
-st.write("---")
 st.caption("Made by ViewIt.")
-st.write("""[😼 GitHub](https://github.com/viewitai) • 
-    [📸 Instagram](https://instagram/viewit.ae) • [𝕏 Twitter](https://twitter.com/aeviewit)""")
+st.write("---")
 
+width = 35
+c1, c2, c3, c4 = st.columns(4)
+with c1:
+    st.write(f'''<center>
+            <a href='https://viewit.ae'>
+                <img src="https://cdn4.iconfinder.com/data/icons/liberty/46/Earth-1024.png" 
+                    alt="viewit-landing" width="{width}">
+            </a></center>
+            ''', unsafe_allow_html=True)
+
+with c2:
+    st.write(f'''<center>
+            <a href='https://github.com/viewitai'>
+                <img src="https://cdn2.iconfinder.com/data/icons/social-icons-33/128/Github-1024.png" 
+                    alt="github" width="{width}">
+            </a></center>
+            ''', unsafe_allow_html=True)
+
+with c3:
+    st.write(f'''<center>
+            <a href='https://instagram/viewit.ae'>
+                <img src="https://cdn2.iconfinder.com/data/icons/social-icons-33/128/Instagram-1024.png" 
+                    alt="instagram" width="{width}">
+            </a></center>
+            ''', unsafe_allow_html=True)
+
+with c4:
+    st.write(f'''<center>
+            <a href='https://twitter.com/aeviewit'>
+                <img src="https://cdn2.iconfinder.com/data/icons/social-icons-33/128/Twitter-1024.png" 
+                    alt="twitter" width="{width}">
+            </a></center>
+            ''', unsafe_allow_html=True)
+
+# st.write("""[😼 GitHub](https://github.com/viewitai) •
+#     [📸 Instagram](https://instagram/viewit.ae) • [𝕏 Twitter](https://twitter.com/aeviewit)""")
+
+st.write('---')
 st.caption('''By using this chatbot, you agree that the chatbot is provided on 
            an "as is" basis and that we do not assume any liability for any 
            errors, omissions or other issues that may arise from your use of 
