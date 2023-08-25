@@ -1,8 +1,11 @@
 import streamlit as st
-from main import hide_made_by_streamlit
+from Chat import hide_made_by_streamlit
 from trubrics.integrations.streamlit import FeedbackCollector
 
-st.set_page_config(page_title='Feedback • ViewIt.AI', page_icon='📝', layout='wide')
+try:
+    st.set_page_config(page_title='Feedback • ViewIt.AI', page_icon='📝', layout='wide')
+except:
+    st.experimental_rerun()
 
 collector = FeedbackCollector(
     component_name="general feedback",
@@ -23,11 +26,14 @@ st.write('''
 
 st.subheader("We're here to listen.")
 
-collector.st_feedback(
+feed_saves = []
+
+feed = collector.st_feedback(
     feedback_type="textbox",
     model="gpt-4",
     user_id=None,   # TODO: Add this later on when implementing authentication
     open_feedback_label="Share your experience",
 )
+
 
 hide_made_by_streamlit()
