@@ -26,14 +26,11 @@ st.write('''
 
 st.subheader("We're here to listen.")
 
-feed_saves = []
-
 feed = collector.st_feedback(
     feedback_type="textbox",
     model="gpt-4",
     user_id=None,   # TODO: Add this later on when implementing authentication
     open_feedback_label="Share your experience",
 )
-
 
 hide_made_by_streamlit()
