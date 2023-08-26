@@ -198,6 +198,52 @@ with st.sidebar:
             - What does sales type mean?
             """
         )
+
+    st.write("---") 
+    width = 25
+    c1, c2, c3, c4, c5 = st.columns(5)
+    with c1:
+        # https://cdn4.iconfinder.com/data/icons/liberty/46/Earth-1024.png
+        st.write(f'''<center>
+                <a href='https://viewit.ae'>
+                    <img src="https://viewit.ae/_nuxt/img/viewit-logo-no-text.25ba9bc.png" 
+                        alt="viewit-landing" width="{width}">
+                </a></center>
+                ''', unsafe_allow_html=True)
+
+    with c2:
+        st.write(f'''<center>
+                <a href='https://github.com/viewitai'>
+                    <img src="https://cdn2.iconfinder.com/data/icons/social-icons-33/128/Github-1024.png" 
+                        alt="github" width="{width}">
+                </a></center>
+                ''', unsafe_allow_html=True)
+
+    with c3:
+        st.write(f'''<center>
+                <a href='https://www.facebook.com/View1T'>
+                    <img src="https://cdn2.iconfinder.com/data/icons/social-icons-33/128/Facebook-1024.png" 
+                        alt="facebook" width="{width}">
+                </a></center>
+                ''', unsafe_allow_html=True)
+
+    with c4:
+        st.write(f'''<center>
+                <a href='https://instagram.com/viewit.ae'>
+                    <img src="https://cdn2.iconfinder.com/data/icons/social-icons-33/128/Instagram-1024.png" 
+                        alt="instagram" width="{width}">
+                </a></center>
+                ''', unsafe_allow_html=True)
+
+    with c5:
+        st.write(f'''<center>
+                <a href='https://twitter.com/aeviewit'>
+                    <img src="https://cdn2.iconfinder.com/data/icons/social-icons-33/128/Twitter-1024.png" 
+                        alt="twitter" width="{width}">
+                </a></center>
+                ''', unsafe_allow_html=True)
+    st.write('---')
+
     st.caption('© 2023 ViewIt. All rights reserved.')
 
 
@@ -308,47 +354,13 @@ def hide_made_by_streamlit():
 hide_made_by_streamlit()
 
 # FOOTER #
+st.write('---')
 st.caption("Made by ViewIt.")
-st.write("---")
 
-width = 35
-c1, c2, c3, c4 = st.columns(4)
-with c1:
-    st.write(f'''<center>
-            <a href='https://viewit.ae'>
-                <img src="https://cdn4.iconfinder.com/data/icons/liberty/46/Earth-1024.png" 
-                    alt="viewit-landing" width="{width}">
-            </a></center>
-            ''', unsafe_allow_html=True)
-
-with c2:
-    st.write(f'''<center>
-            <a href='https://github.com/viewitai'>
-                <img src="https://cdn2.iconfinder.com/data/icons/social-icons-33/128/Github-1024.png" 
-                    alt="github" width="{width}">
-            </a></center>
-            ''', unsafe_allow_html=True)
-
-with c3:
-    st.write(f'''<center>
-            <a href='https://instagram/viewit.ae'>
-                <img src="https://cdn2.iconfinder.com/data/icons/social-icons-33/128/Instagram-1024.png" 
-                    alt="instagram" width="{width}">
-            </a></center>
-            ''', unsafe_allow_html=True)
-
-with c4:
-    st.write(f'''<center>
-            <a href='https://twitter.com/aeviewit'>
-                <img src="https://cdn2.iconfinder.com/data/icons/social-icons-33/128/Twitter-1024.png" 
-                    alt="twitter" width="{width}">
-            </a></center>
-            ''', unsafe_allow_html=True)
 
 # st.write("""[😼 GitHub](https://github.com/viewitai) •
 #     [📸 Instagram](https://instagram/viewit.ae) • [𝕏 Twitter](https://twitter.com/aeviewit)""")
 
-st.write('---')
 st.caption('''By using this chatbot, you agree that the chatbot is provided on 
            an "as is" basis and that we do not assume any liability for any 
            errors, omissions or other issues that may arise from your use of 

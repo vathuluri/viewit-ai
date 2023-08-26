@@ -21,7 +21,8 @@ with col2:
 
 st.write('''
 ## Got suggestions?
-## Or want to report a bug?
+### Or want to report a bug?
+---
 ''')
 
 st.subheader("We're here to listen.")
@@ -32,5 +33,54 @@ feed = collector.st_feedback(
     user_id=None,   # TODO: Add this later on when implementing authentication
     open_feedback_label="Share your experience",
 )
+
+with st.sidebar:
+    # st.write("---")
+    width = 25
+    c1, c2, c3, c4, c5 = st.columns(5)
+    with c1:
+        # https://cdn4.iconfinder.com/data/icons/liberty/46/Earth-1024.png
+        st.write(f'''<center>
+                <a href='https://viewit.ae'>
+                    <img src="https://viewit.ae/_nuxt/img/viewit-logo-no-text.25ba9bc.png" 
+                        alt="viewit-landing" width="{width}">
+                </a></center>
+                ''', unsafe_allow_html=True)
+
+    with c2:
+        st.write(f'''<center>
+                <a href='https://github.com/viewitai'>
+                    <img src="https://cdn2.iconfinder.com/data/icons/social-icons-33/128/Github-1024.png" 
+                        alt="github" width="{width}">
+                </a></center>
+                ''', unsafe_allow_html=True)
+
+    with c3:
+        st.write(f'''<center>
+                <a href='https://www.facebook.com/View1T'>
+                    <img src="https://cdn2.iconfinder.com/data/icons/social-icons-33/128/Facebook-1024.png" 
+                        alt="facebook" width="{width}">
+                </a></center>
+                ''', unsafe_allow_html=True)
+
+    with c4:
+        st.write(f'''<center>
+                <a href='https://instagram.com/viewit.ae'>
+                    <img src="https://cdn2.iconfinder.com/data/icons/social-icons-33/128/Instagram-1024.png" 
+                        alt="instagram" width="{width}">
+                </a></center>
+                ''', unsafe_allow_html=True)
+
+    with c5:
+        st.write(f'''<center>
+                <a href='https://twitter.com/aeviewit'>
+                    <img src="https://cdn2.iconfinder.com/data/icons/social-icons-33/128/Twitter-1024.png" 
+                        alt="twitter" width="{width}">
+                </a></center>
+                ''', unsafe_allow_html=True)
+    st.write('---')
+
+    st.caption('© 2023 ViewIt. All rights reserved.')
+
 
 hide_made_by_streamlit()
