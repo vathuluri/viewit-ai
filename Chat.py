@@ -138,7 +138,7 @@ with st.sidebar:
     st.write(f'''
     <div class="social-icons">
         <a href="https://viewit.ae" class="icon viewit" aria-label="ViewIt"></a>
-        <a href="https://github.com/viewitai" class="icon github" aria-label="GitHub"></a>
+        <!-- <a href="https://github.com/viewitai" class="icon github" aria-label="GitHub"></a> -->
         <a href="https://facebook.com/View1T" class="icon facebook" aria-label="Facebook"></a>
         <a href="https://instagram.com/viewit.ae" class="icon instagram" aria-label="Instagram"></a>
         <a href="https://twitter.com/aeviewit" class="icon twitter" aria-label="Twitter"></a>

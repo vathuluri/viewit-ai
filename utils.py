@@ -99,9 +99,9 @@ def custom_css():
                         background-image: url('https://viewit.ae/_nuxt/img/viewit-logo-no-text.25ba9bc.png');
                     }
 
-                    .github {
+                    /* .github {
                         background-image: url('https://cdn2.iconfinder.com/data/icons/social-icons-33/128/Github-1024.png');
-                    }
+                    } */
 
                     .facebook {
                         background-image: url('https://cdn2.iconfinder.com/data/icons/social-icons-33/128/Facebook-1024.png');
