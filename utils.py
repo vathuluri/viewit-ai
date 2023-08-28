@@ -28,7 +28,6 @@ def create_pandas_dataframe_agent(
         format_instructions: str,
         verbose: bool,
         **kwargs) -> AgentExecutor:
-    
     """Construct a pandas agent from an LLM and dataframe."""
 
     if not isinstance(df, pd.DataFrame):
@@ -63,6 +62,7 @@ def create_pandas_dataframe_agent(
         memory=memory,
         **kwargs
     )
+
 
 def custom_css():
     hide_streamlit_style = """

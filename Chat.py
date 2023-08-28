@@ -9,7 +9,6 @@ from trubrics.integrations.streamlit import FeedbackCollector
 from langchain.schema.messages import HumanMessage, AIMessage
 from utils import load_data, create_pandas_dataframe_agent, custom_css, msgs
 
-
 # Set page launch configurations
 try:
     st.set_page_config(
@@ -32,7 +31,6 @@ except Exception as e:
 # 'ai' to 'user' and 'assistant'. This displays the default chat interface in streamlit
 HumanMessage.type = 'user'
 AIMessage.type = 'assistant'
-
 
 # VARIABLES
 TEMPERATURE = 0.1
@@ -57,7 +55,6 @@ spinner_texts = [
     '👽 Becoming sentient...',
     '🔍 Finding your property...'
 ]
-
 
 # ViewIt OpenAI API key
 openai.organization = st.secrets['org']
@@ -135,10 +132,7 @@ with st.sidebar:
             - What does sales type mean?
             """
         )
-
     st.write("---")
-    width = 25
-    # c1, c2, c3, c4, c5 = st.columns(5)
 
     # https://cdn4.iconfinder.com/data/icons/liberty/46/Earth-1024.png
     st.write(f'''
@@ -253,10 +247,6 @@ custom_css()
 # FOOTER #
 st.write('---')
 st.caption("Made by ViewIt.")
-
-
-# st.write("""[😼 GitHub](https://github.com/viewitai) •
-#     [📸 Instagram](https://instagram/viewit.ae) • [𝕏 Twitter](https://twitter.com/aeviewit)""")
 
 st.caption('''By using this chatbot, you agree that the chatbot is provided on 
            an "as is" basis and that we do not assume any liability for any 

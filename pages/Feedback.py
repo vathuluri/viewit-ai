@@ -3,14 +3,17 @@ from utils import custom_css
 from trubrics.integrations.streamlit import FeedbackCollector
 
 try:
-    st.set_page_config(page_title='Feedback • ViewIt.AI', page_icon='📝', layout='wide')
+    st.set_page_config(page_title='Feedback • ViewIt.AI',
+                       page_icon='📝', layout='wide')
 except:
     st.experimental_rerun()
 
 collector = FeedbackCollector(
     component_name="general feedback",
-    email=st.secrets["TRUBRICS_EMAIL"], # Store your Trubrics credentials in st.secrets:
-    password=st.secrets["TRUBRICS_PASSWORD"], # https://blog.streamlit.io/secrets-in-sharing-apps/
+    # Store your Trubrics credentials in st.secrets:
+    email=st.secrets["TRUBRICS_EMAIL"],
+    # https://blog.streamlit.io/secrets-in-sharing-apps/
+    password=st.secrets["TRUBRICS_PASSWORD"],
 )
 
 # Add Viewit logo image to the center of page
