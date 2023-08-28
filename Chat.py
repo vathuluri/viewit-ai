@@ -1,18 +1,14 @@
 import time
 import openai
 import random
-import pandas as pd
 from prompts import *
 import streamlit as st
 from datetime import datetime
-from langchain import LLMChain
 from langchain.chat_models import ChatOpenAI
-from langchain.memory import ConversationBufferMemory
-from langchain.agents import ZeroShotAgent, AgentExecutor
-from langchain.tools.python.tool import PythonAstREPLTool
 from trubrics.integrations.streamlit import FeedbackCollector
 from langchain.schema.messages import HumanMessage, AIMessage
-from langchain.memory.chat_message_histories import StreamlitChatMessageHistory
+from utils import load_data, create_pandas_dataframe_agent, custom_css, msgs
+
 
 # Set page launch configurations
 try:
@@ -38,60 +34,6 @@ HumanMessage.type = 'user'
 AIMessage.type = 'assistant'
 
 
-@st.cache_data
-def load_data(filename) -> pd.DataFrame:
-    df = pd.read_csv(f"data/{filename}")
-    df['Date'] = pd.to_datetime(df['Date'], format="%d-%m-%Y", dayfirst=True)
-
-    return df
-
-
-# @st.cache_resource
-def create_pandas_dataframe_agent(llm,
-                                  df: pd.DataFrame,
-                                  prefix: str,
-                                  suffix: str,
-                                  format_instructions: str,
-                                  verbose: bool,
-                                  memory,
-                                  **kwargs
-                                  ) -> AgentExecutor:
-    """Construct a pandas agent from an LLM and dataframe."""
-
-    if not isinstance(df, pd.DataFrame):
-        raise ValueError(f"Expected pandas object, got {type(df)}")
-
-    input_variables = ["df", "input", "chat_history", "agent_scratchpad"]
-
-    tools = [PythonAstREPLTool(locals={"df": df})]
-
-    prompt = ZeroShotAgent.create_prompt(
-        tools=tools,
-        prefix=prefix,
-        suffix=suffix,
-        format_instructions=format_instructions,
-        input_variables=input_variables
-    )
-    partial_prompt = prompt.partial(df=str(df.head()))
-
-    llm_chain = LLMChain(
-        llm=llm,
-        prompt=partial_prompt
-    )
-    tool_names = [tool.name for tool in tools]
-
-    agent = ZeroShotAgent(llm_chain=llm_chain,
-                          allowed_tools=tool_names, verbose=verbose)
-
-    return AgentExecutor.from_agent_and_tools(
-        agent=agent,
-        tools=tools,
-        verbose=verbose,
-        memory=memory,
-        **kwargs
-    )
-
-
 # VARIABLES
 TEMPERATURE = 0.1
 df = load_data('reidin_new.csv')
@@ -112,18 +54,14 @@ spinner_texts = [
     '🍳 Preparing your answer...',
     '🏢 Counting buildings...',
     '👨 Pretending to be human...',
-    '👽 Becoming sentient...'
+    '👽 Becoming sentient...',
+    '🔍 Finding your property...'
 ]
 
 
 # ViewIt OpenAI API key
 openai.organization = st.secrets['org']
 openai.api_key = st.secrets['api_key']
-
-
-# Set up memory
-msgs = StreamlitChatMessageHistory(key="langchain_messages")
-memory = ConversationBufferMemory(chat_memory=msgs, memory_key="chat_history")
 
 
 # APP INTERFACE START #
@@ -156,7 +94,6 @@ agent = create_pandas_dataframe_agent(
     suffix=SUFFIX,
     format_instructions=FORMAT_INSTRUCTIONS,
     verbose=True,
-    memory=memory,
     handle_parsing_errors=True
 )
 
@@ -199,49 +136,19 @@ with st.sidebar:
             """
         )
 
-    st.write("---") 
+    st.write("---")
     width = 25
-    c1, c2, c3, c4, c5 = st.columns(5)
-    with c1:
-        # https://cdn4.iconfinder.com/data/icons/liberty/46/Earth-1024.png
-        st.write(f'''<center>
-                <a href='https://viewit.ae'>
-                    <img src="https://viewit.ae/_nuxt/img/viewit-logo-no-text.25ba9bc.png" 
-                        alt="viewit-landing" width="{width}">
-                </a></center>
-                ''', unsafe_allow_html=True)
+    # c1, c2, c3, c4, c5 = st.columns(5)
 
-    with c2:
-        st.write(f'''<center>
-                <a href='https://github.com/viewitai'>
-                    <img src="https://cdn2.iconfinder.com/data/icons/social-icons-33/128/Github-1024.png" 
-                        alt="github" width="{width}">
-                </a></center>
-                ''', unsafe_allow_html=True)
-
-    with c3:
-        st.write(f'''<center>
-                <a href='https://www.facebook.com/View1T'>
-                    <img src="https://cdn2.iconfinder.com/data/icons/social-icons-33/128/Facebook-1024.png" 
-                        alt="facebook" width="{width}">
-                </a></center>
-                ''', unsafe_allow_html=True)
-
-    with c4:
-        st.write(f'''<center>
-                <a href='https://instagram.com/viewit.ae'>
-                    <img src="https://cdn2.iconfinder.com/data/icons/social-icons-33/128/Instagram-1024.png" 
-                        alt="instagram" width="{width}">
-                </a></center>
-                ''', unsafe_allow_html=True)
-
-    with c5:
-        st.write(f'''<center>
-                <a href='https://twitter.com/aeviewit'>
-                    <img src="https://cdn2.iconfinder.com/data/icons/social-icons-33/128/Twitter-1024.png" 
-                        alt="twitter" width="{width}">
-                </a></center>
-                ''', unsafe_allow_html=True)
+    # https://cdn4.iconfinder.com/data/icons/liberty/46/Earth-1024.png
+    st.write(f'''
+    <div class="social-icons">
+        <a href="https://viewit.ae" class="icon viewit" aria-label="ViewIt"></a>
+        <a href="https://github.com/viewitai" class="icon github" aria-label="GitHub"></a>
+        <a href="https://facebook.com/View1T" class="icon facebook" aria-label="Facebook"></a>
+        <a href="https://instagram.com/viewit.ae" class="icon instagram" aria-label="Instagram"></a>
+        <a href="https://twitter.com/aeviewit" class="icon twitter" aria-label="Twitter"></a>
+    </div>''', unsafe_allow_html=True)
     st.write('---')
 
     st.caption('© 2023 ViewIt. All rights reserved.')
@@ -341,17 +248,7 @@ else:
 
 
 # Hide 'Made with Streamlit' from footer
-def hide_made_by_streamlit():
-    hide_streamlit_style = """
-                <style>
-                footer {visibility: hidden;}
-                </style>
-                """
-
-    st.markdown(hide_streamlit_style, unsafe_allow_html=True)
-
-
-hide_made_by_streamlit()
+custom_css()
 
 # FOOTER #
 st.write('---')
