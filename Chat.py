@@ -15,7 +15,7 @@ try:
     st.set_page_config(
         page_title="Viewit.AI | Property Analyst", page_icon="🌇",
         initial_sidebar_state='collapsed',
-        menu_items={'Report a bug': 'https://viewit-ai-chatbot.streamlit.app/feedback',
+        menu_items={'Report a bug': 'https://viewit-ai-chatbot.streamlit.app/Feedback',
                     'About': """### Made by ViewIt
 Visit us: https://viewit.ae
 
