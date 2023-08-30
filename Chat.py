@@ -303,7 +303,7 @@ else:
         response_log = f"Bot [{datetime.now().strftime('%H:%M:%S')}]: " + \
             response
         print(response_log)
-        st.experimental_rerun()
+        # st.experimental_rerun()
 
 
 # Hide 'Made with Streamlit' from footer
