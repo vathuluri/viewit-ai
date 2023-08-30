@@ -16,7 +16,7 @@ scikit-learn
 scipy
 streamlit
 streamlit-authenticator
-streamlit-feedback==0.0.9
+streamlit-feedback
 tabulate
 tiktoken
-trubrics==1.4.5
+trubrics
