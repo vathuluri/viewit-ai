@@ -11,7 +11,7 @@ from langchain.chat_models import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
 from langchain.tools.python.tool import PythonAstREPLTool
 from langchain.agents import ZeroShotAgent, AgentExecutor
-from trubrics.integrations.streamlit import FeedbackCollector
+# from trubrics.integrations.streamlit import FeedbackCollector
 from langchain.schema.messages import HumanMessage, AIMessage
 from langchain.memory.chat_message_histories import StreamlitChatMessageHistory
 
@@ -224,25 +224,25 @@ for n, msg in enumerate(msgs.messages):
     st.chat_message(msg.type).write(msg.content)
 
     # Add feedback component for every AI response
-    if msg.type == 'assistant' and msg.content != welcome_msg:
+    # if msg.type == 'assistant' and msg.content != welcome_msg:
 
-        collector = FeedbackCollector(
-            project="viewit-ae",
-            email=st.secrets["TRUBRICS_EMAIL"],
-            password=st.secrets["TRUBRICS_PASSWORD"],
-        )
+        # collector = FeedbackCollector(
+        #     project="viewit-ae",
+        #     email=st.secrets["TRUBRICS_EMAIL"],
+        #     password=st.secrets["TRUBRICS_PASSWORD"],
+        # )
 
-        feedback = collector.st_feedback(
-            component="chat response",
-            feedback_type="thumbs",
-            model='gpt-4',
-            open_feedback_label="How is our chatbot performing?",
-            metadata={"chat": msg.content},
-            user_id=None,   # TODO: Add this later on when implementing authentication
-            align="flex-end",
-            single_submit=True,
-            key=f"feedback_{int(n/2)}"
-        )
+        # feedback = collector.st_feedback(
+        #     component="chat response",
+        #     feedback_type="thumbs",
+        #     model='gpt-4',
+        #     open_feedback_label="How is our chatbot performing?",
+        #     metadata={"chat": msg.content},
+        #     user_id=None,   # TODO: Add this later on when implementing authentication
+        #     align="flex-end",
+        #     single_submit=True,
+        #     key=f"feedback_{int(n/2)}"
+        # )
 
 
 # Maximum allowed messages

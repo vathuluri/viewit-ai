@@ -1,6 +1,6 @@
 import streamlit as st
 from utils import custom_css
-from trubrics.integrations.streamlit import FeedbackCollector
+# from trubrics.integrations.streamlit import FeedbackCollector
 
 try:
     st.set_page_config(page_title='Feedback • ViewIt.AI',
@@ -8,13 +8,13 @@ try:
 except:
     st.experimental_rerun()
 
-collector = FeedbackCollector(
-    component_name="general feedback",
-    # Store your Trubrics credentials in st.secrets:
-    email=st.secrets["TRUBRICS_EMAIL"],
-    # https://blog.streamlit.io/secrets-in-sharing-apps/
-    password=st.secrets["TRUBRICS_PASSWORD"],
-)
+# collector = FeedbackCollector(
+#     component_name="general feedback",
+#     # Store your Trubrics credentials in st.secrets:
+#     email=st.secrets["TRUBRICS_EMAIL"],
+#     # https://blog.streamlit.io/secrets-in-sharing-apps/
+#     password=st.secrets["TRUBRICS_PASSWORD"],
+# )
 
 # Add Viewit logo image to the center of page
 col1, col2, col3 = st.columns(3)
@@ -30,12 +30,12 @@ st.write('''
 
 st.subheader("We're here to listen.")
 
-feed = collector.st_feedback(
-    feedback_type="textbox",
-    model="gpt-4",
-    user_id=None,   # TODO: Add this later on when implementing authentication
-    open_feedback_label="Share your experience",
-)
+# feed = collector.st_feedback(
+#     feedback_type="textbox",
+#     model="gpt-4",
+#     user_id=None,   # TODO: Add this later on when implementing authentication
+#     open_feedback_label="Share your experience",
+# )
 
 with st.sidebar:
     # st.write("---")
