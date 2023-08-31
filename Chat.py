@@ -1,3 +1,4 @@
+import uuid
 import time
 import openai
 import random
@@ -11,7 +12,7 @@ from langchain.chat_models import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
 from langchain.tools.python.tool import PythonAstREPLTool
 from langchain.agents import ZeroShotAgent, AgentExecutor
-# from trubrics.integrations.streamlit import FeedbackCollector
+from trubrics.integrations.streamlit import FeedbackCollector
 from langchain.schema.messages import HumanMessage, AIMessage
 from langchain.memory.chat_message_histories import StreamlitChatMessageHistory
 
@@ -19,7 +20,7 @@ from langchain.memory.chat_message_histories import StreamlitChatMessageHistory
 try:
     st.set_page_config(
         page_title="Viewit.AI | Property Analyst", page_icon="🌇",
-        initial_sidebar_state='collapsed',
+        initial_sidebar_state='auto',
         menu_items={'Report a bug': 'https://viewit-ai-chatbot.streamlit.app/Feedback',
                     'About': """### Made by ViewIt
 Visit us: https://viewit.ae
@@ -33,15 +34,15 @@ except Exception as e:
     st.toast("Psst. Try refreshing the page.", icon="👀")
 
 
-# Override default HumanMessage and AIMessage's 'type' attribute from 'human' and
-# 'ai' to 'user' and 'assistant'. This displays the default chat interface in streamlit
-HumanMessage.type = 'user'
-AIMessage.type = 'assistant'
-
-
-# Set up memory
-msgs = StreamlitChatMessageHistory(key="langchain_messages")
-memory = ConversationBufferMemory(chat_memory=msgs, memory_key="chat_history")
+@st.cache_data(show_spinner=False)
+def init_trubrics():
+    """Initialize Trubrics FeedbackCollector"""
+    collector = FeedbackCollector(
+        project="default",  # TODO: change to viewit-pk before deployment
+        email=st.secrets.TRUBRICS_EMAIL,
+        password=st.secrets.TRUBRICS_PASSWORD
+    )
+    return collector
 
 
 @st.cache_data
@@ -97,12 +98,33 @@ def create_pandas_dataframe_agent(
     )
 
 
+collector = init_trubrics()
+
+# Add session state variables
+if "prompt_ids" not in st.session_state:
+    st.session_state["prompt_ids"] = []
+if "session_id" not in st.session_state:
+    st.session_state["session_id"] = str(uuid.uuid4())
+
+
+# Override default HumanMessage and AIMessage's 'type' attribute from 'human' and
+# 'ai' to 'user' and 'assistant'. This displays the default chat interface in streamlit
+HumanMessage.type = 'user'
+AIMessage.type = 'assistant'
+
+
+# Set up memory
+msgs = StreamlitChatMessageHistory(key="langchain_messages")
+memory = ConversationBufferMemory(chat_memory=msgs, memory_key="chat_history")
+
+
 # VARIABLES
 TEMPERATURE = 0.1
 df = load_data('reidin_new.csv')
+model = 'gpt-4'
 
 llm = ChatOpenAI(temperature=TEMPERATURE,
-                 model_name='gpt-4',
+                 model_name=model,
                  openai_api_key=st.secrets['api_key'])
 
 # llm = OpenAI(temperature=TEMPERATURE,
@@ -220,30 +242,20 @@ if len(msgs.messages) == 0:
 feedback = None
 # Render current messages from StreamlitChatMessageHistory
 for n, msg in enumerate(msgs.messages):
-
     st.chat_message(msg.type).write(msg.content)
 
     # Add feedback component for every AI response
-    # if msg.type == 'assistant' and msg.content != welcome_msg:
-
-        # collector = FeedbackCollector(
-        #     project="viewit-ae",
-        #     email=st.secrets["TRUBRICS_EMAIL"],
-        #     password=st.secrets["TRUBRICS_PASSWORD"],
-        # )
-
-        # feedback = collector.st_feedback(
-        #     component="chat response",
-        #     feedback_type="thumbs",
-        #     model='gpt-4',
-        #     open_feedback_label="How is our chatbot performing?",
-        #     metadata={"chat": msg.content},
-        #     user_id=None,   # TODO: Add this later on when implementing authentication
-        #     align="flex-end",
-        #     single_submit=True,
-        #     key=f"feedback_{int(n/2)}"
-        # )
-
+    if msg.type == 'assistant' and msg.content != welcome_msg:
+        feedback = collector.st_feedback(
+            component="chat-response",
+            feedback_type="thumbs",
+            model=model,
+            prompt_id=st.session_state.prompt_ids[int(n / 2) - 1],
+            open_feedback_label="How do you feel about this response?",
+            align="flex-end",
+            single_submit=True,
+            key=f"feedback_{int(n/2)}"
+        )
 
 # Maximum allowed messages
 max_messages = (
@@ -286,18 +298,26 @@ else:
                 st.toast(str(e), icon='⚠️')
                 print(str(e))
 
-            # Write AI response
-            with st.chat_message("assistant"):
-                message_placeholder = st.empty()
-                full_response = ""
+        # Write AI response
+        with st.chat_message("assistant"):
+            message_placeholder = st.empty()
+            full_response = ""
 
-                # Simulate stream of response with milliseconds delay
-                for chunk in response.split():
-                    full_response += chunk + " "
-                    time.sleep(0.02)
-                    # Add a blinking cursor to simulate typing
-                    message_placeholder.markdown(full_response + "▌")
-                message_placeholder.markdown(full_response)
+            # Simulate stream of response with milliseconds delay
+            for chunk in response.split():
+                full_response += chunk + " "
+                time.sleep(0.02)
+                # Add a blinking cursor to simulate typing
+                message_placeholder.markdown(full_response + "▌")
+            message_placeholder.markdown(full_response)
+
+        logged_prompt = collector.log_prompt(
+            config_model={"model": model},
+            prompt=user_input,
+            generation=response,
+            session_id=st.session_state.session_id
+        )
+        st.session_state.prompt_ids.append(logged_prompt.id)
 
         # Log AI response to terminal
         response_log = f"Bot [{datetime.now().strftime('%H:%M:%S')}]: " + \

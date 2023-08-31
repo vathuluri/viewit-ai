@@ -1,5 +1,6 @@
 import streamlit as st
 from utils import custom_css
+from Chat import collector, model
 # from trubrics.integrations.streamlit import FeedbackCollector
 
 try:
@@ -17,25 +18,22 @@ except:
 # )
 
 # Add Viewit logo image to the center of page
-col1, col2, col3 = st.columns(3)
+col1, col2, col3 = st.columns([1,1.2,1])
 with col2:
-    st.image("https://i.postimg.cc/Nfz5nZ8G/Logo.png", width=200)
+    st.image("https://i.postimg.cc/Nfz5nZ8G/Logo.png", width=300)
 
 
-st.write('''
-## Got suggestions?
-### Or want to report a bug?
----
-''')
+    st.subheader('⭐ Rate your experience!')
 
-st.subheader("We're here to listen.")
-
-# feed = collector.st_feedback(
-#     feedback_type="textbox",
-#     model="gpt-4",
-#     user_id=None,   # TODO: Add this later on when implementing authentication
-#     open_feedback_label="Share your experience",
-# )
+st.write('---')
+feed = collector.st_feedback(
+            component="general-feedback",
+            feedback_type="faces",
+            model=model,
+            open_feedback_label="Share your overall experience with our chatbot",
+            align="center",
+            single_submit=True
+        )
 
 with st.sidebar:
     # st.write("---")

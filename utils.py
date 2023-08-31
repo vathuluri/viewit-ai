@@ -50,6 +50,10 @@ def custom_css():
                     .instagram {
                         background-image: url('https://cdn2.iconfinder.com/data/icons/social-icons-33/128/Instagram-1024.png');
                     }
+                    .css-1r6slb0, .e1f1d6gn1 {
+                        display: flex;
+                        justify-content: center; /* Horizontal centering */
+                    }
                 </style>
                 """
 
