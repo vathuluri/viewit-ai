@@ -38,7 +38,7 @@ except Exception as e:
 def init_trubrics():
     """Initialize Trubrics FeedbackCollector"""
     collector = FeedbackCollector(
-        project="viewit-ae",  # TODO: change to viewit-ae before deployment
+        project="default",  # TODO: change to viewit-ae before deployment
         email=st.secrets.TRUBRICS_EMAIL,
         password=st.secrets.TRUBRICS_PASSWORD
     )
