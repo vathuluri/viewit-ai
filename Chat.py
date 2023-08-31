@@ -247,7 +247,7 @@ for n, msg in enumerate(msgs.messages):
     # Add feedback component for every AI response
     if msg.type == 'assistant' and msg.content != welcome_msg:
         feedback = collector.st_feedback(
-            component="chat-response",
+            component="default",
             feedback_type="thumbs",
             model=model,
             prompt_id=st.session_state.prompt_ids[int(n / 2) - 1],
