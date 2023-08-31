@@ -27,7 +27,7 @@ with col2:
 
 st.write('---')
 feed = collector.st_feedback(
-            component="general-feedback",
+            component="default",
             feedback_type="faces",
             model=model,
             open_feedback_label="Share your overall experience with our chatbot",
