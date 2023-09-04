@@ -162,12 +162,12 @@ st.text('Thousands of properties. One AI. More than an agent.')
 
 
 # Radio button to switch between data variants
-data_option = st.radio('Choose data', [
-                       'Reidin (original)', 'Reidin (Location-SubLocation swap)'], horizontal=True)
-if data_option == 'Reidin (original)':
-    df = load_data('reidin_new.csv')
-elif data_option == 'Reidin (Location-SubLocation swap)':
-    df = load_data('reidin_loc_swap.csv')
+# data_option = st.radio('Choose data', [
+#                        'Reidin (original)', 'Reidin (Location-SubLocation swap)'], horizontal=True)
+# if data_option == 'Reidin (original)':
+#     df = load_data('reidin_new.csv')
+# elif data_option == 'Reidin (Location-SubLocation swap)':
+#     df = load_data('reidin_loc_swap.csv')
 
 
 # AGENT CREATION HAPPENS HERE
@@ -246,20 +246,33 @@ for n, msg in enumerate(msgs.messages):
 
     # Add feedback component for every AI response
     if msg.type == 'assistant' and msg.content != welcome_msg:
-        feedback = collector.st_feedback(
-            component="default",
-            feedback_type="thumbs",
-            model=model,
-            prompt_id=st.session_state.prompt_ids[int(n / 2) - 1],
-            open_feedback_label="How do you feel about this response?",
-            align="flex-end",
-            single_submit=True,
-            key=f"feedback_{int(n/2)}"
-        )
-
+        try:
+            feedback = collector.st_feedback(
+                component="default",
+                feedback_type="thumbs",
+                model=model,
+                metadata = {'ai-response': msg.content},
+                prompt_id=st.session_state.prompt_ids[int(n / 2) - 1],
+                open_feedback_label="How do you feel about this response?",
+                align="flex-end",
+                single_submit=True,
+                key=f"feedback_{int(n/2)}"
+            )
+        except IndexError as e:
+            feedback = collector.st_feedback(
+                component="default",
+                feedback_type="thumbs",
+                model=model,
+                metadata = {'ai-response': msg.content},
+                open_feedback_label="How do you feel about this response?",
+                align="flex-end",
+                single_submit=True,
+                key=f"feedback_{int(n/2)}"
+            )
+            
 # Maximum allowed messages
 max_messages = (
-    21  # Counting both user and assistant messages including the welcome message,
+    11  # Counting both user and assistant messages including the welcome message,
         # so 10 iterations of conversation
 )
 
