@@ -162,8 +162,8 @@ st.text('Thousands of properties. One AI. More than an agent.')
 
 
 # Radio button to switch between data variants
-# data_option = st.radio('Choose data', [
-#                        'Reidin (original)', 'Reidin (Location-SubLocation swap)'], horizontal=True)
+# data_option = st.radio('Choose data', ['Reidin (original)', 'Reidin (Location-SubLocation swap)'],
+#                        horizontal=True, captions=["reidin_new.csv", "reidin_loc_swap.csv"])
 # if data_option == 'Reidin (original)':
 #     df = load_data('reidin_new.csv')
 # elif data_option == 'Reidin (Location-SubLocation swap)':
@@ -251,7 +251,7 @@ for n, msg in enumerate(msgs.messages):
                 component="default",
                 feedback_type="thumbs",
                 model=model,
-                metadata = {'ai-response': msg.content},
+                metadata={'ai-response': msg.content},
                 prompt_id=st.session_state.prompt_ids[int(n / 2) - 1],
                 open_feedback_label="How do you feel about this response?",
                 align="flex-end",
@@ -263,17 +263,17 @@ for n, msg in enumerate(msgs.messages):
                 component="default",
                 feedback_type="thumbs",
                 model=model,
-                metadata = {'ai-response': msg.content},
+                metadata={'ai-response': msg.content},
                 open_feedback_label="How do you feel about this response?",
                 align="flex-end",
                 single_submit=True,
                 key=f"feedback_{int(n/2)}"
             )
-            
+
 # Maximum allowed messages
 max_messages = (
     11  # Counting both user and assistant messages including the welcome message,
-        # so 10 iterations of conversation
+        # so 5 iterations of conversation
 )
 
 # Display modal and prevent usage after limit hit

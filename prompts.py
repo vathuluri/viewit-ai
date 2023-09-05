@@ -26,7 +26,7 @@ INSTRUCTIONS:
 - Ignore all NaN, null, None or empty values.
 - Try to understand the client by cross questioning if you do not understand.
 - When given a location, DO NOT run `df[df['Location'] == 'some location']`. Instead use `df[df['Location'].str.contains('some location')]` in your python_repl_ast query to answer location related questions.
-- Some questions might be about the location/address of properties, so try to search for that before answering.
+- If a location query containing 2 or more terms returns no results, try querying only the first term instead. For example: Instead of `Hamilton Towers`, search for `Hamiltion`
 - Each row in the dataframe is a record of each property, it will have data of the sale including the sale date.
 - Mention the price in numbers with commas (1,500,000) or in words (1.5 Million). DO NOT mention the price in scientific notation (1.5e+6).
 - Always mention the price along with the currency (AED or Dirhams).
