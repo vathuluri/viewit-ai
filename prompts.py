@@ -39,26 +39,16 @@ YOUR TASK:
 You have access to the following tools to reply to the input below:
 ---"""
 
-FORMAT_INSTRUCTIONS = """To use a tool, please use the following format:
+FORMAT_INSTRUCTIONS = """Use the following format:
 
-```
 Input: the input question you must answer
-Thought: Do I need to use a tool? Yes
-Action: the action to take, should be one of [{tool_names}]
+Thought: Do I need to use a tool? (Yes or No)
+Action: the action to take, should be one of [{tool_names}] if using a tool, otherwise answer on your own.
 Action Input: the input to the action
 Observation: the result of the action
 ... (this Thought/Action/Action Input/Observation can repeat N times)
 Thought: I now know the final answer
-Final Answer: the final answer to the original input question
-```
-
-When you have a response to say to the Human, or if you do not need to use a tool, you MUST use the format:
-
-```
-Input: the input question, small talk, or greeting you must reply to
-Thought: Do I need to use a tool? No
-Final Answer: [your response here]
-```"""
+Final Answer: the final answer to the original input question"""
 
 SUFFIX = """
 This is the result of `print(df.head())`:
