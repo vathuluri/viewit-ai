@@ -1,13 +1,11 @@
-import uuid
-import time
-import openai
-import random
 import pandas as pd
 from prompts import *
 import streamlit as st
 from utils import custom_css
 from datetime import datetime
 from langchain import LLMChain
+import os, uuid, time, openai, random
+from langchain.tools import GooglePlacesTool
 from langchain.chat_models import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
 from langchain.tools.python.tool import PythonAstREPLTool
@@ -15,6 +13,7 @@ from langchain.agents import ZeroShotAgent, AgentExecutor
 from trubrics.integrations.streamlit import FeedbackCollector
 from langchain.schema.messages import HumanMessage, AIMessage
 from langchain.memory.chat_message_histories import StreamlitChatMessageHistory
+# from langchain.agents import create_pandas_dataframe_agent
 
 # Set page launch configurations
 try:
@@ -69,7 +68,7 @@ def create_pandas_dataframe_agent(
 
     input_variables = ["df", "input", "chat_history", "agent_scratchpad"]
 
-    tools = [PythonAstREPLTool(locals={"df": df})]
+    tools = [PythonAstREPLTool(locals={"df": df}), GooglePlacesTool()]
 
     prompt = ZeroShotAgent.create_prompt(
         tools=tools,
@@ -143,10 +142,10 @@ spinner_texts = [
     '🔍 Finding your property...'
 ]
 
-# ViewIt OpenAI API key
+# API keys
 openai.organization = st.secrets['org']
 openai.api_key = st.secrets['api_key']
-
+os.environ["GPLACES_API_KEY"] = st.secrets['gplaces_key']
 
 # APP INTERFACE START #
 
