@@ -316,7 +316,7 @@ else:
             full_response = ""
 
             # Simulate stream of response with milliseconds delay
-            for chunk in response.split():
+            for chunk in response.split(' '):
                 full_response += chunk + " "
                 time.sleep(0.02)
                 # Add a blinking cursor to simulate typing
