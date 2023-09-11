@@ -34,12 +34,12 @@ except Exception as e:
 
 
 @st.cache_data(show_spinner=False)
-def init_trubrics():
+def init_trubrics(project='default', email=st.secrets.TRUBRICS_EMAIL, password=st.secrets.TRUBRICS_PASSWORD):
     """Initialize Trubrics FeedbackCollector"""
     collector = FeedbackCollector(
-        project="default",  # TODO: change to viewit-ae before deployment
-        email=st.secrets.TRUBRICS_EMAIL,
-        password=st.secrets.TRUBRICS_PASSWORD
+        project=project,  # TODO: change to viewit-ae before deployment
+        email=email,
+        password=password
     )
     return collector
 
@@ -97,7 +97,7 @@ def create_pandas_dataframe_agent(
     )
 
 
-collector = init_trubrics()
+collector = init_trubrics(project='viewit-ae')
 
 # Add session state variables
 if "prompt_ids" not in st.session_state:
@@ -243,31 +243,35 @@ feedback = None
 for n, msg in enumerate(msgs.messages):
     st.chat_message(msg.type).write(msg.content)
 
+    user_query = ""
+    if msg.type == 'user':
+        user_query = msg.content
+
     # Add feedback component for every AI response
     if msg.type == 'assistant' and msg.content != welcome_msg:
-        try:
-            feedback = collector.st_feedback(
-                component="default",
-                feedback_type="thumbs",
-                model=model,
-                metadata={'ai-response': msg.content},
-                prompt_id=st.session_state.prompt_ids[int(n / 2) - 1],
-                open_feedback_label="How do you feel about this response?",
-                align="flex-end",
-                single_submit=True,
-                key=f"feedback_{int(n/2)}"
-            )
-        except:
-            feedback = collector.st_feedback(
-                component="default",
-                feedback_type="thumbs",
-                model=model,
-                metadata={'ai-response': msg.content},
-                open_feedback_label="How do you feel about this response?",
-                align="flex-end",
-                single_submit=True,
-                key=f"feedback_{int(n/2)}"
-            )
+        # try:
+        feedback = collector.st_feedback(
+            component="chat-response",
+            feedback_type="thumbs",
+            model=model,
+            tags=['viewit-ae'],
+            metadata={'query': user_query,'ai-response': msg.content},
+            user_id=None,
+            open_feedback_label="How do you feel about this response?",
+            align="flex-end",   
+            key=f"feedback_{int(n/2)}"
+        )
+        # except Exception as e:
+        #     feedback = collector.st_feedback(
+        #         component="default",
+        #         feedback_type="thumbs",
+        #         model=model,
+        #         metadata={'ai-response': msg.content},
+        #         open_feedback_label="How do you feel about this response?",
+        #         align="flex-end",
+        #         key=f"feedback_{int(n/2)}"
+        #     )
+        #     st.toast(str(e))
 
 # Maximum allowed messages
 max_messages = (
@@ -324,10 +328,11 @@ else:
             message_placeholder.markdown(full_response)
 
         logged_prompt = collector.log_prompt(
-            model_config={"model": model},
+            config_model={"model": model, 'temperature':TEMPERATURE},
             prompt=user_input,
             generation=response,
-            session_id=st.session_state.session_id
+            session_id=st.session_state.session_id,
+            tags = ['viewit-ae']
         )
         st.session_state.prompt_ids.append(logged_prompt.id)
 

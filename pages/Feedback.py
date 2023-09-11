@@ -27,12 +27,12 @@ with col2:
 
 st.write('---')
 feed = collector.st_feedback(
-            component="default",
-            feedback_type="faces",
+            component="general-feedback",
+            feedback_type="textbox",
             model=model,
+            user_id=None,
             open_feedback_label="Share your overall experience with our chatbot",
             align="center",
-            single_submit=True
         )
 
 with st.sidebar:
