@@ -324,7 +324,7 @@ else:
             message_placeholder.markdown(full_response)
 
         logged_prompt = collector.log_prompt(
-            config_model={"model": model},
+            model_config={"model": model},
             prompt=user_input,
             generation=response,
             session_id=st.session_state.session_id
