@@ -8,6 +8,6 @@ protobuf==3.20.0
 pydantic==1.10.9
 streamlit
 streamlit-authenticator
-streamlit-feedback
+streamlit-feedback==0.1.2
 tabulate
-trubrics
+trubrics==1.6.0
