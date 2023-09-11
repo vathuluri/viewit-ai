@@ -257,7 +257,7 @@ for n, msg in enumerate(msgs.messages):
                 single_submit=True,
                 key=f"feedback_{int(n/2)}"
             )
-        except IndexError as e:
+        except:
             feedback = collector.st_feedback(
                 component="default",
                 feedback_type="thumbs",
