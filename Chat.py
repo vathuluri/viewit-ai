@@ -182,8 +182,17 @@ agent = create_pandas_dataframe_agent(
 
 # Show data that is being used
 with st.expander("Show data"):
-    st.write(f"Total rows: {len(df)}")
-    st.dataframe(df)
+    data_container = st.empty()
+    data_pwd = data_container.text_input("Enter password for access to data", type='password')
+    if data_pwd == "viewitisthebest":    
+        data_container.empty()
+        st.write(f"Total rows: {len(df)}")
+        st.dataframe(df)
+    elif data_pwd == "":
+        pass
+    else:
+        st.warning("Wrong password!")
+
 
 
 # App Sidebar
