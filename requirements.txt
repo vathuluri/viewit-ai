@@ -10,4 +10,4 @@ streamlit
 streamlit-authenticator
 streamlit-feedback==0.1.2
 tabulate
-trubrics==1.6.0
+trubrics==1.6.1

@@ -29,6 +29,7 @@ st.write('---')
 feed = collector.st_feedback(
             component="general-feedback",
             feedback_type="textbox",
+            # textbox_type="text-area",
             model=model,
             user_id=None,
             open_feedback_label="Share your overall experience with our chatbot",
