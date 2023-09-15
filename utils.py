@@ -1,10 +1,18 @@
 import streamlit as st
 
-def custom_css():
-    hide_streamlit_style = """
+def hide_elements():
+    hide_footer = """
                 <style>
-                    footer {visibility: hidden;}
+                    footer {visibility: hidden;} 
                     .viewerBadge_container__r5tak styles_viewerBadge__CvC9N {visibility: hidden;}
+                    button.css-1xbhckf.ef3psqc4 {visibility: hidden;}
+                </style>"""
+    st.write(hide_footer, unsafe_allow_html=True)
+
+
+def icon_style():
+    icon_style = """           
+                <style>
                     .social-icons {
                         display: flex;
                         flex-wrap: wrap;
@@ -57,4 +65,4 @@ def custom_css():
                 </style>
                 """
 
-    st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+    st.markdown(icon_style, unsafe_allow_html=True)
