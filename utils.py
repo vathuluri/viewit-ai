@@ -5,7 +5,7 @@ def hide_elements():
                 <style>
                     footer {visibility: hidden;} 
                     .viewerBadge_container__r5tak styles_viewerBadge__CvC9N {visibility: hidden;}
-                    button.css-1xbhckf.ef3psqc4 {visibility: hidden;}
+                    /* button.css-1xbhckf.ef3psqc4 {visibility: hidden;} */
                 </style>"""
     st.write(hide_footer, unsafe_allow_html=True)
 
