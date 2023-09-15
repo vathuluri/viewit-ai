@@ -1,5 +1,5 @@
 import streamlit as st
-from utils import custom_css
+from utils import icon_style, hide_elements
 from Chat import collector, model
 # from trubrics.integrations.streamlit import FeedbackCollector
 
@@ -29,7 +29,7 @@ st.write('---')
 feed = collector.st_feedback(
             component="general-feedback",
             feedback_type="textbox",
-            # textbox_type="text-area",
+            textbox_type="text-area",
             model=model,
             user_id=None,
             open_feedback_label="Share your overall experience with our chatbot",
@@ -50,5 +50,7 @@ with st.sidebar:
 
     st.caption('© 2023 ViewIt. All rights reserved.')
 
-
-custom_css()
+# Hide `Made with Streamlit`
+hide_elements()
+# CSS for social icons
+icon_style()
