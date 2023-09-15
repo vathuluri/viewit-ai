@@ -1,16 +1,20 @@
-import pandas as pd
 from prompts import *
+from utils import icon_style, hide_elements
+
 import streamlit as st
-from utils import custom_css
+
+import pandas as pd
 from datetime import datetime
-from langchain import LLMChain
 import os, uuid, time, openai, random
+
+from trubrics.integrations.streamlit import FeedbackCollector
+
+from langchain import LLMChain
 from langchain.tools import GooglePlacesTool
 from langchain.chat_models import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
 from langchain.tools.python.tool import PythonAstREPLTool
 from langchain.agents import ZeroShotAgent, AgentExecutor
-from trubrics.integrations.streamlit import FeedbackCollector
 from langchain.schema.messages import HumanMessage, AIMessage
 from langchain.memory.chat_message_histories import StreamlitChatMessageHistory
 # from langchain.agents import create_pandas_dataframe_agent
@@ -183,8 +187,9 @@ agent = create_pandas_dataframe_agent(
 # Show data that is being used
 with st.expander("Show data"):
     data_container = st.empty()
-    data_pwd = data_container.text_input("Enter password for access to data", type='password')
-    if data_pwd == "viewitisthebest":    
+    data_pwd = data_container.text_input(
+        "Enter password to access data", type='password')
+    if data_pwd == "viewitisthebest":
         data_container.empty()
         st.write(f"Total rows: {len(df)}")
         st.dataframe(df)
@@ -192,7 +197,6 @@ with st.expander("Show data"):
         pass
     else:
         st.warning("Wrong password!")
-
 
 
 # App Sidebar
@@ -206,9 +210,6 @@ with st.sidebar:
                 Introducing ViewIt.AI, a Real Estate Chatbot Assistant will help 
                 you out with all your real estate queries.
                 
-                # How to use
-                Simply enter your query in the text field and have a chat with
-                your virtual agent.
 
                 # Data
                 Uses Reidin Property Data.
@@ -239,8 +240,14 @@ with st.sidebar:
         <a href="https://twitter.com/aeviewit" class="icon twitter" aria-label="Twitter"></a>
     </div>''', unsafe_allow_html=True)
     st.write('---')
+            
+    st.caption("Made by ViewIt.")
 
-    st.caption('© 2023 ViewIt. All rights reserved.')
+    st.caption('''By using this chatbot, you agree that the chatbot is provided on 
+            an "as is" basis and that we do not assume any liability for any 
+            errors, omissions or other issues that may arise from your use of 
+            the chatbot.''')
+    
 
 welcome_msg = "Welcome to ViewIt! I'm your virtual assistant. How can I help you today?"
 # Welcome message
@@ -264,10 +271,10 @@ for n, msg in enumerate(msgs.messages):
             feedback_type="thumbs",
             model=model,
             tags=['viewit-ae'],
-            metadata={'query': user_query,'ai-response': msg.content},
+            metadata={'query': user_query, 'ai-response': msg.content},
             user_id=None,
             open_feedback_label="How do you feel about this response?",
-            align="flex-end",   
+            align="flex-end",
             key=f"feedback_{int(n/2)}"
         )
         # except Exception as e:
@@ -284,17 +291,16 @@ for n, msg in enumerate(msgs.messages):
 
 # Maximum allowed messages
 max_messages = (
-    11  # Counting both user and assistant messages including the welcome message,
-        # so 5 iterations of conversation
+    21  # Counting both user and assistant messages including the welcome message,
+        # so 10 iterations of conversation
 )
 
 # Display modal and prevent usage after limit hit
 if len(msgs.messages) >= max_messages:
-    st.info(
-        """**Notice:** The maximum message limit for this demo version has been reached. 
-        We value your interest! Like what we're building? Please create 
-        an account to continue using, or check our available pricing plans 
-        [here](https://viewit.ai/)."""
+    st.info(  # TODO: Add HubSpot form here
+        """**Notice:** The maximum message limit for this demo version has been 
+        reached. We value your interest! Like what we're building? Please check 
+        our available pricing plans [here](https://viewit.ai/)."""
     )
 
 else:
@@ -337,11 +343,11 @@ else:
             message_placeholder.markdown(full_response)
 
         logged_prompt = collector.log_prompt(
-            config_model={"model": model, 'temperature':TEMPERATURE},
+            config_model={"model": model, 'temperature': TEMPERATURE},
             prompt=user_input,
             generation=response,
             session_id=st.session_state.session_id,
-            tags = ['viewit-ae']
+            tags=['viewit-ae']
         )
         st.session_state.prompt_ids.append(logged_prompt.id)
 
@@ -352,14 +358,46 @@ else:
         # st.experimental_rerun()
 
 
-# Hide 'Made with Streamlit' from footer
-custom_css()
+# CSS for social icons
+icon_style()
+hide_elements()
+
+# unfix chat_input from bottom
+chat_input_override = """
+<style>
+.css-17f9rl5 {
+    /* position: fixed; */
+    bottom: 0px;
+    padding-bottom: 70px;
+    padding-top: 1rem;
+    background-color: rgb(10, 54, 150);
+    z-index: 99;
+}
+.element-container, .css-1hynsf2, .e1f1d6gn2 {
+    position: fixed;
+    bottom: 0px;
+}
+</style>"""
+# st.write(chat_input_override, unsafe_allow_html=True)
 
 # FOOTER #
-st.write('---')
-st.caption("Made by ViewIt.")
-
-st.caption('''By using this chatbot, you agree that the chatbot is provided on 
-           an "as is" basis and that we do not assume any liability for any 
-           errors, omissions or other issues that may arise from your use of 
-           the chatbot.''')
+# st.write('---')
+st.caption('© 2023 ViewIt. All rights reserved.')
+caption = """
+<footer>
+    <div class="stMarkdown" style="width: 704px;">
+        <div data-testid="stCaptionContainer" class="css-1wncz92 e1nzilvr5">
+            <p>Made by ViewIt.</p>
+        </div>
+    </div>
+    <div class="stMarkdown" style="width: 704px;">
+        <div data-testid="stCaptionContainer" class="css-1wncz92 e1nzilvr5">
+            <p>
+            By using this chatbot, you agree that the chatbot is provided on an 
+            "as is" basis and that we do not assume any liability for any errors, 
+            omissions or other issues that may arise from your use of the chatbot.
+            </p>
+        </div>
+    </div>
+</footer>"""
+# st.write(caption, unsafe_allow_html=True)
