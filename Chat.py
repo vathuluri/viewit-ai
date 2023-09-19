@@ -110,10 +110,10 @@ if "session_id" not in st.session_state:
     st.session_state["session_id"] = str(uuid.uuid4())
 
 
-# Override default HumanMessage and AIMessage's 'type' attribute from 'human' and
-# 'ai' to 'user' and 'assistant'. This displays the default chat interface in streamlit
-HumanMessage.type = 'user'
-AIMessage.type = 'assistant'
+if 'button_question' not in st.session_state:
+    st.session_state['button_question'] = ""
+if 'disabled' not in st.session_state:
+    st.session_state['disabled'] = False
 
 
 # Set up memory
@@ -181,7 +181,8 @@ agent = create_pandas_dataframe_agent(
     suffix=SUFFIX,
     format_instructions=FORMAT_INSTRUCTIONS,
     verbose=True,
-    handle_parsing_errors=True
+    handle_parsing_errors=True,
+    # max_execution_time=30,
 )
 
 # Show data that is being used
@@ -201,6 +202,7 @@ with st.expander("Show data"):
 
 # App Sidebar
 with st.sidebar:
+    # st.write(st.session_state['button_question'])
     # st.write("session state msgs: ", st.session_state.langchain_messages)
     # st.write("StreamlitChatMessageHistory: ", msgs.messages)
 
@@ -241,13 +243,25 @@ with st.sidebar:
     </div>''', unsafe_allow_html=True)
     st.write('---')
             
-    st.caption("Made by ViewIt.")
-
+    st.caption("© Made by ViewIt 2023. All rights reserved.")
     st.caption('''By using this chatbot, you agree that the chatbot is provided on 
             an "as is" basis and that we do not assume any liability for any 
             errors, omissions or other issues that may arise from your use of 
             the chatbot.''')
     
+
+# Suggested questions
+questions = [
+    'What is the closest supermarket to the cheapest property in Dubai Marina?',
+    'What is the most recent transaction in Fairways North?',
+    'Is JLT closer to Sharjah than Arabian Ranches?'
+]
+
+
+def send_button_ques(question):
+    st.session_state.disabled = True
+    st.session_state['button_question'] = question
+
 
 welcome_msg = "Welcome to ViewIt! I'm your virtual assistant. How can I help you today?"
 # Welcome message
@@ -258,6 +272,15 @@ feedback = None
 # Render current messages from StreamlitChatMessageHistory
 for n, msg in enumerate(msgs.messages):
     st.chat_message(msg.type).write(msg.content)
+    
+    # Render suggested question buttons
+    buttons = st.container()
+    if n == 0:
+        for q in questions:
+            button_ques = buttons.button(
+                label=q, on_click=send_button_ques, args=[q], 
+                disabled=st.session_state.disabled
+            )
 
     user_query = ""
     if msg.type == 'user':
@@ -304,8 +327,8 @@ if len(msgs.messages) >= max_messages:
     )
 
 else:
-    # If user inputs a new prompt, generate and draw a new response
-    if user_input := st.chat_input('Ask away'):
+    # If user inputs a new prompt or clicks button, generate and draw a new response
+    if user_input := st.chat_input('Ask away') or st.session_state['button_question']:
 
         # Write user input
         st.chat_message("user").write(user_input)
@@ -328,6 +351,9 @@ else:
                         "Could not parse LLM output: `").removesuffix("`")
                 st.toast(str(e), icon='⚠️')
                 print(str(e))
+
+        # Clear button question session state to prevent answer regeneration on rerun
+        st.session_state['button_question'] = ""
 
         # Write AI response
         with st.chat_message("assistant"):
@@ -361,43 +387,3 @@ else:
 # CSS for social icons
 icon_style()
 hide_elements()
-
-# unfix chat_input from bottom
-chat_input_override = """
-<style>
-.css-17f9rl5 {
-    /* position: fixed; */
-    bottom: 0px;
-    padding-bottom: 70px;
-    padding-top: 1rem;
-    background-color: rgb(10, 54, 150);
-    z-index: 99;
-}
-.element-container, .css-1hynsf2, .e1f1d6gn2 {
-    position: fixed;
-    bottom: 0px;
-}
-</style>"""
-# st.write(chat_input_override, unsafe_allow_html=True)
-
-# FOOTER #
-# st.write('---')
-st.caption('© 2023 ViewIt. All rights reserved.')
-caption = """
-<footer>
-    <div class="stMarkdown" style="width: 704px;">
-        <div data-testid="stCaptionContainer" class="css-1wncz92 e1nzilvr5">
-            <p>Made by ViewIt.</p>
-        </div>
-    </div>
-    <div class="stMarkdown" style="width: 704px;">
-        <div data-testid="stCaptionContainer" class="css-1wncz92 e1nzilvr5">
-            <p>
-            By using this chatbot, you agree that the chatbot is provided on an 
-            "as is" basis and that we do not assume any liability for any errors, 
-            omissions or other issues that may arise from your use of the chatbot.
-            </p>
-        </div>
-    </div>
-</footer>"""
-# st.write(caption, unsafe_allow_html=True)
