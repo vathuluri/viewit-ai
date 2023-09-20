@@ -164,7 +164,8 @@ with col2:
 
 # App Title
 st.header('🕵️‍♂️ ViewIt AI | Your Reliable Property Assistant')
-st.text('Thousands of properties. One AI. More than an agent.')
+# st.text('Thousands of properties. One AI. More than an agent.')
+st.text('The Real Estate Agent that never sleeps.')
 
 
 # Radio button to switch between data variants
@@ -325,11 +326,16 @@ max_messages = (
 
 # Display modal and prevent usage after limit hit
 if len(msgs.messages) >= max_messages:
-    st.info(  # TODO: Add HubSpot form here
+    st.info(
         """**Notice:** The maximum message limit for this demo version has been 
-        reached. We value your interest! Like what we're building? Please check 
-        our available pricing plans [here](https://viewit.ai/)."""
+        reached. We value your interest! Like what we're building? Please fill 
+        up the form below and check our available pricing plans [here](https://viewit.ai/)."""
     )
+
+    # Display HubSpot form
+    hubspot = """<iframe src='https://share-eu1.hsforms.com/1nn4Nf-T-Qkayaq97_eD10wft9m6' 
+    style='height:500px; width: 100%'></iframe>"""
+    st.write(hubspot, unsafe_allow_html=True)
 
 else:
     # If user inputs a new prompt or clicks button, generate and draw a new response
