@@ -100,6 +100,9 @@ def create_pandas_dataframe_agent(
         **kwargs
     )
 
+# Rename msg type names for consistency
+AIMessage.type = 'assistant'
+HumanMessage.type = 'user'
 
 collector = init_trubrics(project='viewit-ae')
 
@@ -281,6 +284,8 @@ for n, msg in enumerate(msgs.messages):
                 label=q, on_click=send_button_ques, args=[q], 
                 disabled=st.session_state.disabled
             )
+    # else:
+    #     st.session_state.disabled = True
 
     user_query = ""
     if msg.type == 'user':
@@ -336,10 +341,13 @@ else:
         # Log user input to terminal
         user_log = f"\nUser [{datetime.now().strftime('%H:%M:%S')}]: " + \
             user_input
+        print('='*50)
         print(user_log)
 
         # Note: new messages are saved to history automatically by Langchain during run
         with st.spinner(random.choice(spinner_texts)):
+            # st.session_state.disabled = True
+            hide_elements()
             try:
                 response = agent.run(user_input)
 
