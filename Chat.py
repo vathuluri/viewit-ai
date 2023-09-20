@@ -159,7 +159,8 @@ os.environ["GPLACES_API_KEY"] = st.secrets['gplaces_key']
 # Add Viewit logo image to the center of page
 col1, col2, col3 = st.columns(3)
 with col2:
-    st.image("https://i.postimg.cc/Nfz5nZ8G/Logo.png", width=200)
+    # st.image("https://i.postimg.cc/Nfz5nZ8G/Logo.png", width=200)
+    st.image("imgs/Viewit ai Logo.png", width=200)
 
 
 # App Title

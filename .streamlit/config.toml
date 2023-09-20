@@ -1,8 +1,16 @@
 [theme]
-base = "dark"
-primaryColor = "#ffc300"
-backgroundColor = "#0a3696"
-secondaryBackgroundColor = "#062363"
+base = "light"
+primaryColor = "#3d7af8"
+backgroundColor = "#fafafa"
+secondaryBackgroundColor = "#e4f0fe"
+textColor = "#0a3696" #292d2f
+font = "sans serif"
+
+
+# base = "dark"
+# primaryColor = "#ffc300"
+# backgroundColor = "#0a3696"
+# secondaryBackgroundColor = "#062363"
 
 [logger]
 
