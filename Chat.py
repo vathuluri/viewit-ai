@@ -164,10 +164,14 @@ with col2:
 
 
 # App Title
-st.header('🕵️‍♂️ ViewIt AI | Your Reliable Property Assistant')
+st.header('ViewIt AI | Your Reliable Property Assistant')
 # st.text('Thousands of properties. One AI. More than an agent.')
-st.text('The Real Estate Agent that never sleeps.')
-
+h1, h2 = st.columns(2)
+with h1:
+    st.text('The Real Estate Agent that never sleeps.')
+with h2:
+    st.text("Now in Alpha stage.")
+    # st.caption("Now in Alpha stage")
 
 # Radio button to switch between data variants
 # data_option = st.radio('Choose data', ['Reidin (original)', 'Reidin (Location-SubLocation swap)'],
@@ -258,8 +262,8 @@ with st.sidebar:
 # Suggested questions
 questions = [
     'What is the closest supermarket to the cheapest property in Dubai Marina?',
-    'What is the most recent transaction in Fairways North?',
-    'Is JLT closer to Sharjah than Arabian Ranches?'
+    'Is JLT closer to Sharjah than Arabian Ranches?',
+    'What is the best villa to buy in JVC?'
 ]
 
 
@@ -273,10 +277,18 @@ welcome_msg = "Welcome to ViewIt! I'm your virtual assistant. How can I help you
 if len(msgs.messages) == 0:
     msgs.add_ai_message(welcome_msg)
 
+# viewit_avatar = "https://viewit.ae/_nuxt/img/viewit-logo-no-text.25ba9bc.png"
+# viewit_avatar = "imgs/viewit-logo-expanded.png"
+# viewit_avatar = "imgs/viewit-blue-on-white.png"
+viewit_avatar = "imgs/viewit-white-on-blue.png"
+
 feedback = None
 # Render current messages from StreamlitChatMessageHistory
 for n, msg in enumerate(msgs.messages):
-    st.chat_message(msg.type).write(msg.content)
+    if msg.type == 'assistant':
+        st.chat_message(msg.type, avatar=viewit_avatar).write(msg.content)
+    else:
+        st.chat_message(msg.type).write(msg.content)
     
     # Render suggested question buttons
     buttons = st.container()
@@ -371,7 +383,7 @@ else:
         st.session_state['button_question'] = ""
 
         # Write AI response
-        with st.chat_message("assistant"):
+        with st.chat_message("assistant", avatar=viewit_avatar):
             message_placeholder = st.empty()
             full_response = ""
 
