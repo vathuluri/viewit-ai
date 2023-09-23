@@ -1,5 +1,5 @@
 from prompts import *
-from utils import icon_style, hide_elements
+from utils import icon_style, hide_elements, chatbox_color
 
 import streamlit as st
 
@@ -414,3 +414,4 @@ else:
 # CSS for social icons
 icon_style()
 hide_elements()
+chatbox_color(ai_color="#cfe3fa")

@@ -68,6 +68,23 @@ def icon_style():
     st.markdown(icon_style, unsafe_allow_html=True)
 
 
+def chatbox_color(ai_color: str = "rgba(0,0,0,0)", user_color: str = "rgba(240, 242, 246, 0.5)"):
+    """Change the background color of the chat message.
+    Use css supported codes, and use hex code with the `#` symbol."""
+    
+    chat_css = f"""
+    <style>
+        .css-4oy321 {{
+            background-color: {ai_color};
+        }}
+        .css-1c7y2kd {{
+            background-color: {user_color};
+        }}
+    </style>"""
+    st.write(chat_css, unsafe_allow_html=True)
+
+
+
 # unfix chat_input from bottom
 chat_input_override = """
 <style>
