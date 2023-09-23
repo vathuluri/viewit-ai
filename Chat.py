@@ -414,4 +414,4 @@ else:
 # CSS for social icons
 icon_style()
 hide_elements()
-chatbox_color(ai_color="#cfe3fa")
+chatbox_color(ai_color="#e4f0fe")
