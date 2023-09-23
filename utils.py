@@ -1,5 +1,6 @@
 import streamlit as st
 
+@st.cache_data(show_spinner=False)
 def hide_elements():
     hide_footer = """
                 <style>
@@ -10,6 +11,7 @@ def hide_elements():
     st.write(hide_footer, unsafe_allow_html=True)
 
 
+@st.cache_data(show_spinner=False)
 def icon_style():
     icon_style = """           
                 <style>
@@ -68,6 +70,7 @@ def icon_style():
     st.markdown(icon_style, unsafe_allow_html=True)
 
 
+@st.cache_data(show_spinner=False)
 def chatbox_color(ai_color: str = "rgba(0,0,0,0)", user_color: str = "rgba(240, 242, 246, 0.5)"):
     """Change the background color of the chat message.
     Use css supported codes, and use hex code with the `#` symbol."""
