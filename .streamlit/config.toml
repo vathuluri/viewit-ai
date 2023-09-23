@@ -2,8 +2,8 @@
 base = "light"
 primaryColor = "#3d7af8"
 backgroundColor = "#fafafa"
-secondaryBackgroundColor = "#cfe3fa"
-# secondaryBackgroundColor = "#e4f0fe"
+# secondaryBackgroundColor = "#cfe3fa"
+secondaryBackgroundColor = "#e4f0fe"
 textColor = "#04256e" #292d2f (dark grey) #0a3696 (blue)
 font = "sans serif"
 
