@@ -20,7 +20,8 @@ except:
 # Add Viewit logo image to the center of page
 col1, col2, col3 = st.columns([1,1.2,1])
 with col2:
-    st.image("https://i.postimg.cc/Nfz5nZ8G/Logo.png", width=300)
+    # st.image("https://i.postimg.cc/Nfz5nZ8G/Logo.png", width=300)
+    st.image("imgs/Viewit ai Logo.png", width=300)
 
 
     st.subheader('⭐ Rate your experience!')
