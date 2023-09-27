@@ -1,22 +1,17 @@
+import agents
 from prompts import *
 from utils import icon_style, hide_elements, chatbox_color
 
 import streamlit as st
 
-import pandas as pd
 from datetime import datetime
 import os, uuid, time, openai, random
 
 from trubrics.integrations.streamlit import FeedbackCollector
 
-from langchain import LLMChain
-from langchain.tools import GooglePlacesTool
 from langchain.chat_models import ChatOpenAI
-from langchain.memory import ConversationBufferMemory
-from langchain.tools.python.tool import PythonAstREPLTool
-from langchain.agents import ZeroShotAgent, AgentExecutor
+from langchain.callbacks import get_openai_callback
 from langchain.schema.messages import HumanMessage, AIMessage
-from langchain.memory.chat_message_histories import StreamlitChatMessageHistory
 # from langchain.agents import create_pandas_dataframe_agent
 
 # Set page launch configurations
@@ -48,58 +43,6 @@ def init_trubrics(project='default', email=st.secrets.TRUBRICS_EMAIL, password=s
     return collector
 
 
-@st.cache_data
-def load_data(filename) -> pd.DataFrame:
-    df = pd.read_csv(f"data/{filename}")
-    df['Date'] = pd.to_datetime(df['Date'], format="%d-%m-%Y", dayfirst=True)
-
-    return df
-
-
-# @st.cache_resource
-def create_pandas_dataframe_agent(
-        llm,
-        df: pd.DataFrame,
-        prefix: str,
-        suffix: str,
-        format_instructions: str,
-        verbose: bool,
-        **kwargs) -> AgentExecutor:
-    """Construct a pandas agent from an LLM and dataframe."""
-
-    if not isinstance(df, pd.DataFrame):
-        raise ValueError(f"Expected pandas object, got {type(df)}")
-
-    input_variables = ["df", "input", "chat_history", "agent_scratchpad"]
-
-    tools = [PythonAstREPLTool(locals={"df": df}), GooglePlacesTool()]
-
-    prompt = ZeroShotAgent.create_prompt(
-        tools=tools,
-        prefix=prefix,
-        suffix=suffix,
-        format_instructions=format_instructions,
-        input_variables=input_variables
-    )
-    partial_prompt = prompt.partial(df=str(df.head()))
-
-    llm_chain = LLMChain(
-        llm=llm,
-        prompt=partial_prompt
-    )
-    tool_names = [tool.name for tool in tools]
-
-    agent = ZeroShotAgent(llm_chain=llm_chain,
-                          allowed_tools=tool_names, verbose=verbose)
-
-    return AgentExecutor.from_agent_and_tools(
-        agent=agent,
-        tools=tools,
-        verbose=verbose,
-        memory=memory,
-        **kwargs
-    )
-
 # Rename msg type names for consistency
 AIMessage.type = 'assistant'
 HumanMessage.type = 'user'
@@ -119,23 +62,14 @@ if 'disabled' not in st.session_state:
     st.session_state['disabled'] = False
 
 
-# Set up memory
-msgs = StreamlitChatMessageHistory(key="langchain_messages")
-memory = ConversationBufferMemory(chat_memory=msgs, memory_key="chat_history")
-
-
 # VARIABLES
 TEMPERATURE = 0.1
-df = load_data('reidin_new.csv')
+df = agents.load_data('reidin_new.csv')
 model = 'gpt-4'
 
 llm = ChatOpenAI(temperature=TEMPERATURE,
                  model_name=model,
                  openai_api_key=st.secrets['api_key'])
-
-# llm = OpenAI(temperature=TEMPERATURE,
-#                 model_name=MODEL_NAME,
-#                 openai_api_key=st.secrets['api_key'])
 
 spinner_texts = [
     '🧠 Thinking...',
@@ -183,7 +117,7 @@ with h2:
 
 
 # AGENT CREATION HAPPENS HERE
-agent = create_pandas_dataframe_agent(
+agent = agents.create_pandas_dataframe_agent(
     llm=llm,
     df=df,
     prefix=REIDIN_PREFIX,
@@ -196,6 +130,7 @@ agent = create_pandas_dataframe_agent(
 
 # Show data that is being used
 with st.expander("Show data"):
+    # add simple password for data access
     data_container = st.empty()
     data_pwd = data_container.text_input(
         "Enter password to access data", type='password')
@@ -212,7 +147,7 @@ with st.expander("Show data"):
 # App Sidebar
 with st.sidebar:
     # st.write(st.session_state['button_question'])
-    # st.write("session state msgs: ", st.session_state.langchain_messages)
+    # st.write("session state msgs: ", st.session_state.messages)
     # st.write("StreamlitChatMessageHistory: ", msgs.messages)
 
     # Description
@@ -273,9 +208,14 @@ def send_button_ques(question):
 
 
 welcome_msg = "Welcome to ViewIt! I'm your virtual assistant. How can I help you today?"
+
 # Welcome message
-if len(msgs.messages) == 0:
-    msgs.add_ai_message(welcome_msg)
+if "messages" not in st.session_state:
+    st.session_state['messages'] = [{"role": "assistant", "content": welcome_msg}]
+
+st.sidebar.write("session state msgs: ", st.session_state.messages)
+# if len(msgs.messages) == 0:
+#     msgs.add_ai_message(welcome_msg)
 
 # viewit_avatar = "https://viewit.ae/_nuxt/img/viewit-logo-no-text.25ba9bc.png"
 # viewit_avatar = "imgs/viewit-logo-expanded.png"
@@ -284,11 +224,17 @@ viewit_avatar = "imgs/viewit-white-on-blue.png"
 
 feedback = None
 # Render current messages from StreamlitChatMessageHistory
-for n, msg in enumerate(msgs.messages):
-    if msg.type == 'assistant':
-        st.chat_message(msg.type, avatar=viewit_avatar).write(msg.content)
+for n, msg in enumerate(st.session_state.messages):
+    if msg["role"] == 'assistant':
+        st.chat_message(msg["role"], avatar=viewit_avatar).write(msg["content"])
     else:
-        st.chat_message(msg.type).write(msg.content)
+        st.chat_message(msg["role"]).write(msg["content"])
+
+# for n, msg in enumerate(msgs.messages):
+#     if msg.type == 'assistant':
+#         st.chat_message(msg.type, avatar=viewit_avatar).write(msg.content)
+#     else:
+#         st.chat_message(msg.type).write(msg.content)
     
     # Render suggested question buttons
     buttons = st.container()
@@ -302,34 +248,25 @@ for n, msg in enumerate(msgs.messages):
     #     st.session_state.disabled = True
 
     user_query = ""
-    if msg.type == 'user':
-        user_query = msg.content
+    # if msg.type == 'user':
+    #     user_query = msg.content
+    if msg["role"] == 'user':
+        user_query = msg["content"]
 
     # Add feedback component for every AI response
-    if msg.type == 'assistant' and msg.content != welcome_msg:
-        # try:
+    # if msg.type == 'assistant' and msg.content != welcome_msg:
+    if msg["role"] == 'assistant' and msg["content"] != welcome_msg:
         feedback = collector.st_feedback(
             component="chat-response",
             feedback_type="thumbs",
             model=model,
             tags=['viewit-ae'],
-            metadata={'query': user_query, 'ai-response': msg.content},
+            metadata={'query': user_query, 'ai-response': msg["content"]},
             user_id=None,
             open_feedback_label="How do you feel about this response?",
             align="flex-end",
             key=f"feedback_{int(n/2)}"
         )
-        # except Exception as e:
-        #     feedback = collector.st_feedback(
-        #         component="default",
-        #         feedback_type="thumbs",
-        #         model=model,
-        #         metadata={'ai-response': msg.content},
-        #         open_feedback_label="How do you feel about this response?",
-        #         align="flex-end",
-        #         key=f"feedback_{int(n/2)}"
-        #     )
-        #     st.toast(str(e))
 
 # Maximum allowed messages
 max_messages = (
@@ -338,7 +275,8 @@ max_messages = (
 )
 
 # Display modal and prevent usage after limit hit
-if len(msgs.messages) >= max_messages:
+# if len(msgs.messages) >= max_messages:
+if len(st.session_state.messages) >= max_messages:
     st.info(
         """**Notice:** The maximum message limit for this demo version has been 
         reached. We value your interest! Like what we're building? Please fill 
@@ -355,6 +293,7 @@ else:
     if user_input := st.chat_input('Ask away') or st.session_state['button_question']:
 
         # Write user input
+        st.session_state.messages.append({"role": "user", "content": user_input})
         st.chat_message("user").write(user_input)
 
         # Log user input to terminal
@@ -366,9 +305,14 @@ else:
         # Note: new messages are saved to history automatically by Langchain during run
         with st.spinner(random.choice(spinner_texts)):
             # st.session_state.disabled = True
+            icon_style()
             hide_elements()
+            chatbox_color(ai_color="#e4f0fe")
             try:
-                response = agent.run(user_input)
+                # Get token usage info with openai callback
+                with get_openai_callback() as cb:
+                    response = agent.run(user_input)
+                    print(cb)
 
             # Handle the parsing error by omitting error from response
             except Exception as e:
@@ -384,6 +328,7 @@ else:
 
         # Write AI response
         with st.chat_message("assistant", avatar=viewit_avatar):
+            st.session_state.messages.append({"role": "assistant", "content": response})
             message_placeholder = st.empty()
             full_response = ""
 
