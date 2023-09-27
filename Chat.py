@@ -298,7 +298,7 @@ else:
         # Log user input to terminal
         user_log = f"\nUser [{datetime.now().strftime('%H:%M:%S')}]: " + \
             user_input
-        print('='*50)
+        print('='*90)
         print(user_log)
 
         # Note: new messages are saved to history automatically by Langchain during run
@@ -354,6 +354,8 @@ else:
         print(response_log)
         # st.experimental_rerun()
 
+if len(st.session_state.messages) == 3:
+    st.toast("Tip: Press `R` to refresh the app.", icon="ℹ️")
 
 # CSS for social icons
 icon_style()
