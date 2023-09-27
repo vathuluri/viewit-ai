@@ -213,7 +213,6 @@ welcome_msg = "Welcome to ViewIt! I'm your virtual assistant. How can I help you
 if "messages" not in st.session_state:
     st.session_state['messages'] = [{"role": "assistant", "content": welcome_msg}]
 
-st.sidebar.write("session state msgs: ", st.session_state.messages)
 # if len(msgs.messages) == 0:
 #     msgs.add_ai_message(welcome_msg)
 
