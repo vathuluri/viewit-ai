@@ -77,11 +77,11 @@ def chatbox_color(ai_color: str = "rgba(0,0,0,0)", user_color: str = "rgba(240, 
     
     chat_css = f"""
     <style>
-        .css-4oy321 {{
+        .css-4oy321, .st-emotion-cache-4oy321 {{
             background-color: {ai_color};
             padding: 16px 16px 16px 16px;
         }}
-        .css-1c7y2kd {{
+        .css-1c7y2kd, .st-emotion-cache-1c7y2kd {{
             background-color: {user_color};
         }}
     </style>"""
