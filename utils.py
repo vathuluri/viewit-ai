@@ -7,6 +7,9 @@ def hide_elements():
                     footer {visibility: hidden;} 
                     .viewerBadge_container__r5tak styles_viewerBadge__CvC9N {visibility: hidden;}
                     .stActionButton {visibility: hidden;}
+                    .css-a8fn66 {
+                        text-align: left;
+                    }
                 </style>"""
     st.write(hide_footer, unsafe_allow_html=True)
 
