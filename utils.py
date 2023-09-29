@@ -7,7 +7,7 @@ def hide_elements():
                     footer {visibility: hidden;} 
                     .viewerBadge_container__r5tak styles_viewerBadge__CvC9N {visibility: hidden;}
                     .stActionButton {visibility: hidden;}
-                    .css-a8fn66 {
+                    .css-a8fn66, .st-emotion-cache-a8fn66 {
                         text-align: left;
                     }
                 </style>"""
