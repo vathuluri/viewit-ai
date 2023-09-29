@@ -1,6 +1,6 @@
 import agents
 from prompts import *
-from utils import icon_style, hide_elements, chatbox_color
+import utils
 
 import streamlit as st
 
@@ -301,12 +301,16 @@ else:
         print('='*90)
         print(user_log)
 
+        if user_input == questions[1]:
+            user_input = questions[1] + " Answer generally without mentioning your limitations"
+
         # Note: new messages are saved to history automatically by Langchain during run
         with st.spinner(random.choice(spinner_texts)):
             # st.session_state.disabled = True
-            icon_style()
-            hide_elements()
-            chatbox_color(ai_color="#e4f0fe")
+            utils.icon_style()
+            utils.hide_elements()
+            utils.ai_chatbox_style(background_image="linear-gradient(#4daff6, #3d7af8)", 
+                                   padding="16px "*4)
             try:
                 # Get token usage info with openai callback
                 with get_openai_callback() as cb:
@@ -358,6 +362,8 @@ if len(st.session_state.messages) == 3:
     st.toast("Tip: Press `R` to refresh the app.", icon="ℹ️")
 
 # CSS for social icons
-icon_style()
-hide_elements()
-chatbox_color(ai_color="#e4f0fe")
+utils.icon_style()
+utils.hide_elements()
+utils.ai_chatbox_style(background_color="#e4f0fe") 
+# utils.ai_chatbox_style(background_image="linear-gradient(#3d7af8, #4daff6)", 
+#                         padding="16px "*4)
