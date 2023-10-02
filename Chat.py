@@ -197,8 +197,8 @@ with st.sidebar:
 # Suggested questions
 questions = [
     'What is the closest supermarket to the cheapest property in Dubai Marina?',
-    'Is JLT closer to Sharjah than Arabian Ranches?',
-    'What is the best villa to buy in JVC?'
+    'What is the most recent transaction in Marina Gate?',
+    'What is the most recent transaction in Murjan Tower?'
 ]
 
 
@@ -218,8 +218,8 @@ if "messages" not in st.session_state:
 
 # viewit_avatar = "https://viewit.ae/_nuxt/img/viewit-logo-no-text.25ba9bc.png"
 # viewit_avatar = "imgs/viewit-logo-expanded.png"
-# viewit_avatar = "imgs/viewit-blue-on-white.png"
-viewit_avatar = "imgs/viewit-white-on-blue.png"
+viewit_avatar = "imgs/viewit-blue-on-white.png"
+# viewit_avatar = "imgs/viewit-white-on-blue.png"
 
 feedback = None
 # Render current messages from StreamlitChatMessageHistory
@@ -301,16 +301,14 @@ else:
         print('='*90)
         print(user_log)
 
-        if user_input == questions[1]:
-            user_input = questions[1] + " Answer generally without mentioning your limitations"
-
         # Note: new messages are saved to history automatically by Langchain during run
         with st.spinner(random.choice(spinner_texts)):
             # st.session_state.disabled = True
             utils.icon_style()
             utils.hide_elements()
-            utils.ai_chatbox_style(background_image="linear-gradient(#4daff6, #3d7af8)", 
-                                   padding="16px "*4)
+            utils.ai_chatbox_style()
+            # utils.ai_chatbox_style(background_image="linear-gradient(#4daff6, #3d7af8)", 
+            #                        padding="16px "*4)
             try:
                 # Get token usage info with openai callback
                 with get_openai_callback() as cb:
@@ -364,6 +362,4 @@ if len(st.session_state.messages) == 3:
 # CSS for social icons
 utils.icon_style()
 utils.hide_elements()
-utils.ai_chatbox_style(background_color="#e4f0fe") 
-# utils.ai_chatbox_style(background_image="linear-gradient(#3d7af8, #4daff6)", 
-#                         padding="16px "*4)
+utils.ai_chatbox_style()

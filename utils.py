@@ -74,17 +74,19 @@ def icon_style():
     st.markdown(icon_style, unsafe_allow_html=True)
 
 st.cache_data(show_spinner=False)
-def ai_chatbox_style(**kwargs):
-    
-    properties = []
-
-    for k, v in kwargs.items():
-        k = k.replace("_", "-")
-        properties.append(f"{k}: {v};")
-    
-    css = "<style> .css-4oy321, .st-emotion-cache-4oy321 {"
-    css += "\n".join(properties)
-    css += "} </style>"
+def ai_chatbox_style():
+    css = """
+    <style>
+        .css-4oy321, .st-emotion-cache-4oy321 {
+            background-color: #0c43bc;
+        } /*  #0a3696 */
+        .css-4oy321 p, .st-emotion-cache-4oy321 p {
+            color: #fafafa;
+        }
+        .css-4oy321 p a, .st-emotion-cache-4oy321 p a {
+            color: lightgreen;
+        }
+    </style>"""
 
     st.write(css, unsafe_allow_html=True)
 
