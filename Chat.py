@@ -9,7 +9,7 @@ import os, uuid, time, openai, random
 
 from trubrics.integrations.streamlit import FeedbackCollector
 
-from langchain.chat_models import ChatOpenAI
+from langchain.chat_models import ChatOpenAI, AzureChatOpenAI
 from langchain.callbacks import get_openai_callback
 from langchain.schema.messages import HumanMessage, AIMessage
 # from langchain.agents import create_pandas_dataframe_agent
@@ -67,9 +67,16 @@ TEMPERATURE = 0.1
 df = agents.load_data('reidin_new.csv')
 model = 'gpt-4'
 
-llm = ChatOpenAI(temperature=TEMPERATURE,
-                 model_name=model,
-                 openai_api_key=st.secrets['api_key'])
+# llm = ChatOpenAI(temperature=TEMPERATURE,
+#                  model_name=model,
+#                  openai_api_key=st.secrets['api_key'])
+
+llm = AzureChatOpenAI(
+    verbose=True,
+    openai_api_version="2023-07-01-preview",
+    openai_api_type="azure",
+    temperature=0.1
+)
 
 spinner_texts = [
     '🧠 Thinking...',
@@ -84,8 +91,21 @@ spinner_texts = [
 ]
 
 # API keys
-openai.organization = st.secrets['org']
-openai.api_key = st.secrets['api_key']
+if type(llm) == ChatOpenAI:
+    openai.api_type = "open_ai"
+    openai.api_base = "https://api.openai.com/v1"
+    openai.api_key = st.secrets["api_key"]
+    openai.organization = st.secrets["org"]
+    openai.api_version = None
+
+elif type(llm) == AzureChatOpenAI:
+    openai.api_type = "azure"
+    openai.api_base = "https://viewit-ai.openai.azure.com/"
+    openai.api_version = "2023-07-01-preview"
+    openai.api_key = st.secrets["azure_key"]
+    openai.organization = None
+
+
 os.environ["GPLACES_API_KEY"] = st.secrets['gplaces_key']
 
 # APP INTERFACE START #
