@@ -75,6 +75,9 @@ llm = AzureChatOpenAI(
     verbose=True,
     openai_api_version="2023-07-01-preview",
     openai_api_type="azure",
+    openai_api_base="https://viewit-ai.openai.azure.com/",
+    openai_api_key = st.secrets["azure_key"],
+    openai_organization="",
     temperature=0.1
 )
 
@@ -98,12 +101,13 @@ if type(llm) == ChatOpenAI:
     openai.organization = st.secrets["org"]
     openai.api_version = None
 
-elif type(llm) == AzureChatOpenAI:
-    openai.api_type = "azure"
-    openai.api_base = "https://viewit-ai.openai.azure.com/"
-    openai.api_version = "2023-07-01-preview"
-    openai.api_key = st.secrets["azure_key"]
-    openai.organization = None
+# elif type(llm) == AzureChatOpenAI:
+#     openai.api_type = "azure"
+#     openai.api_base = "https://viewit-ai.openai.azure.com/"
+#     openai.api_version = "2023-07-01-preview"
+#     openai.api_key = st.secrets["azure_key"]
+#     openai.organization = None
+#     os.environ["OPENAI_API_KEY"] = st.secrets['azure_key']
 
 
 os.environ["GPLACES_API_KEY"] = st.secrets['gplaces_key']
