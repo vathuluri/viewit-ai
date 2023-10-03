@@ -65,20 +65,21 @@ if 'disabled' not in st.session_state:
 # VARIABLES
 TEMPERATURE = 0.1
 df = agents.load_data('reidin_new.csv')
-model = 'gpt-4'
+model = 'gpt-3.5-turbo'
 
 # llm = ChatOpenAI(temperature=TEMPERATURE,
 #                  model_name=model,
 #                  openai_api_key=st.secrets['api_key'])
 
 llm = AzureChatOpenAI(
+    model=model,
     verbose=True,
-    openai_api_version="2023-07-01-preview",
-    openai_api_type="azure",
-    openai_api_base="https://viewit-ai.openai.azure.com/",
+    temperature=TEMPERATURE,
     openai_api_key = st.secrets["azure_key"],
-    openai_organization="",
-    temperature=0.1
+    openai_api_base="https://viewit-ai.openai.azure.com/",
+    deployment_name="Hamdan",
+    openai_api_type="azure",
+    openai_api_version="2023-07-01-preview",
 )
 
 spinner_texts = [
@@ -101,13 +102,11 @@ if type(llm) == ChatOpenAI:
     openai.organization = st.secrets["org"]
     openai.api_version = None
 
-# elif type(llm) == AzureChatOpenAI:
+# if type(llm) == AzureChatOpenAI:
 #     openai.api_type = "azure"
 #     openai.api_base = "https://viewit-ai.openai.azure.com/"
-#     openai.api_version = "2023-07-01-preview"
 #     openai.api_key = st.secrets["azure_key"]
-#     openai.organization = None
-#     os.environ["OPENAI_API_KEY"] = st.secrets['azure_key']
+#     openai.api_version = "2023-07-01-preview"
 
 
 os.environ["GPLACES_API_KEY"] = st.secrets['gplaces_key']
