@@ -80,7 +80,7 @@ def ai_chatbox_style():
         .css-4oy321, .st-emotion-cache-4oy321 {
             background-color: #0c43bc;
         } /*  #0a3696 */
-        .css-4oy321 p, .st-emotion-cache-4oy321 p {
+        .css-4oy321 p, .st-emotion-cache-4oy321 p, .css-4oy321 ol, .st-emotion-cache-4oy321 ol{
             color: #fafafa;
         }
         .css-4oy321 p a, .st-emotion-cache-4oy321 p a {

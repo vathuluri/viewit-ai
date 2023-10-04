@@ -1,9 +1,7 @@
-test.ipynb
-testapp.py
+test*.ipynb
+test*.py
 newmodel.py
 falcon.py
-test2.py
-test3.py
 full_prompt.txt
 data/*.xlsx
 .streamlit/secrets.toml

@@ -12,7 +12,7 @@ from trubrics.integrations.streamlit import FeedbackCollector
 from langchain.chat_models import ChatOpenAI, AzureChatOpenAI
 from langchain.callbacks import get_openai_callback
 from langchain.schema.messages import HumanMessage, AIMessage
-# from langchain.agents import create_pandas_dataframe_agent
+from langchain.agents import create_pandas_dataframe_agent
 
 # Set page launch configurations
 try:
@@ -63,7 +63,7 @@ if 'disabled' not in st.session_state:
 
 
 # VARIABLES
-TEMPERATURE = 0.1
+TEMPERATURE = 0
 df = agents.load_data('reidin_new.csv')
 model = 'gpt-3.5-turbo'
 
@@ -77,7 +77,7 @@ llm = AzureChatOpenAI(
     temperature=TEMPERATURE,
     openai_api_key = st.secrets["azure_key"],
     openai_api_base="https://viewit-ai.openai.azure.com/",
-    deployment_name="Hamdan",
+    deployment_name="Hamdan_16K",
     openai_api_type="azure",
     openai_api_version="2023-07-01-preview",
 )
@@ -148,7 +148,6 @@ agent = agents.create_pandas_dataframe_agent(
     format_instructions=FORMAT_INSTRUCTIONS,
     verbose=True,
     handle_parsing_errors=True,
-    # max_execution_time=30,
 )
 
 # Show data that is being used

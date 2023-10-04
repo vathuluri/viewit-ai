@@ -44,9 +44,9 @@ You have access to the following tools to reply to the input below:
 
 FORMAT_INSTRUCTIONS = """Use the following format:
 
-Input: the input question you must answer
-Thought: Do I need to use a tool? (Yes or No)
-Action: the action to take, should be one of [{tool_names}] if using a tool, otherwise answer on your own. If using the `python_repl_ast` tool, import pandas and run `pandas.set_option('display.max_columns',None)` before your query.
+Question: the input question you must answer
+Thought: you should always think about what to do
+Action: the action to take, should be one of [{tool_names}]
 Action Input: the input to the action
 Observation: the result of the action
 ... (this Thought/Action/Action Input/Observation can repeat N times)
