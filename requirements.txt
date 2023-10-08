@@ -6,7 +6,7 @@ pip==23.2.1
 proto-plus==1.22.2
 protobuf==3.20.0
 pydantic
-streamlit
+streamlit==1.27.2
 streamlit-authenticator
 streamlit-feedback==0.1.2
 tabulate
