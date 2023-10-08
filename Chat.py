@@ -297,7 +297,7 @@ for n, msg in enumerate(st.session_state.messages):
 
 # Maximum allowed messages
 max_messages = (
-    21  # Counting both user and assistant messages including the welcome message,
+    11  # Counting both user and assistant messages including the welcome message,
         # so 10 iterations of conversation
 )
 
