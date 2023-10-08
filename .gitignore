@@ -7,3 +7,5 @@ data/*.xlsx
 .streamlit/secrets.toml
 chat_history/
 __pycache__/
+*.html
+__init__.py
