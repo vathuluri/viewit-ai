@@ -1,6 +1,6 @@
-import agents
-from prompts import *
-import utils
+import utils.agents as agents
+from utils import css
+from utils.prompts import *
 
 import streamlit as st
 
@@ -9,10 +9,10 @@ import os, uuid, time, openai, random
 
 from trubrics.integrations.streamlit import FeedbackCollector
 
-from langchain.chat_models import ChatOpenAI, AzureChatOpenAI
 from langchain.callbacks import get_openai_callback
+# from langchain.agents import create_pandas_dataframe_agent
+from langchain.chat_models import ChatOpenAI, AzureChatOpenAI
 from langchain.schema.messages import HumanMessage, AIMessage
-from langchain.agents import create_pandas_dataframe_agent
 
 # Set page launch configurations
 try:
@@ -63,24 +63,24 @@ if 'disabled' not in st.session_state:
 
 
 # VARIABLES
-TEMPERATURE = 0
+TEMPERATURE = 0.1
 df = agents.load_data('reidin_new.csv')
-model = 'gpt-3.5-turbo'
+model = 'gpt-4'
 
-# llm = ChatOpenAI(temperature=TEMPERATURE,
-#                  model_name=model,
-#                  openai_api_key=st.secrets['api_key'])
+llm = ChatOpenAI(temperature=TEMPERATURE,
+                 model_name=model,
+                 openai_api_key=st.secrets['api_key'])
 
-llm = AzureChatOpenAI(
-    model=model,
-    verbose=True,
-    temperature=TEMPERATURE,
-    openai_api_key = st.secrets["azure_key"],
-    openai_api_base="https://viewit-ai.openai.azure.com/",
-    deployment_name="Hamdan_16K",
-    openai_api_type="azure",
-    openai_api_version="2023-07-01-preview",
-)
+# llm = AzureChatOpenAI(
+#     model=model,
+#     verbose=True,
+#     temperature=TEMPERATURE,
+#     openai_api_key = st.secrets["azure_key"],
+#     openai_api_base="https://viewit-ai.openai.azure.com/",
+#     deployment_name="Hamdan_16K",
+#     openai_api_type="azure",
+#     openai_api_version="2023-07-01-preview",
+# )
 
 spinner_texts = [
     '🧠 Thinking...',
@@ -218,20 +218,26 @@ with st.sidebar:
 
 # Suggested questions
 questions = [
-    'What is the closest supermarket to the cheapest property in Dubai Marina?',
-    'What is the most recent transaction in Marina Gate?',
-    'What is the most recent transaction in Murjan Tower?'
+    'Closest supermarket to the cheapest property in Dubai Marina',
+    'Latest transaction in Marina Gate',
+    'Latest transaction in Murjan Tower'
 ]
 
 
 def send_button_ques(question):
+    """Feeds the button question to the agent for execution.
+
+    Args:
+    - question: The text of the button
+    
+    Returns: None
+    """
     st.session_state.disabled = True
-    st.session_state['button_question'] = question
+    st.session_state['button_question'] = "What is the " + question[0].lower() + question[1:] + "?"
 
-
-welcome_msg = "Welcome to ViewIt! I'm your virtual assistant. How can I help you today?"
 
 # Welcome message
+welcome_msg = "Welcome to ViewIt! I'm your virtual assistant. How can I help you today?"
 if "messages" not in st.session_state:
     st.session_state['messages'] = [{"role": "assistant", "content": welcome_msg}]
 
@@ -326,9 +332,9 @@ else:
         # Note: new messages are saved to history automatically by Langchain during run
         with st.spinner(random.choice(spinner_texts)):
             # st.session_state.disabled = True
-            utils.icon_style()
-            utils.hide_elements()
-            utils.ai_chatbox_style()
+            css.icon_style()
+            css.hide_elements()
+            css.ai_chatbox_style()
             # utils.ai_chatbox_style(background_image="linear-gradient(#4daff6, #3d7af8)", 
             #                        padding="16px "*4)
             try:
@@ -382,6 +388,6 @@ if len(st.session_state.messages) == 3:
     st.toast("Tip: Press `R` to refresh the app.", icon="ℹ️")
 
 # CSS for social icons
-utils.icon_style()
-utils.hide_elements()
-utils.ai_chatbox_style()
+css.icon_style()
+css.hide_elements()
+css.ai_chatbox_style()
