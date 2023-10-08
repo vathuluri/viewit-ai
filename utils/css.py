@@ -2,6 +2,7 @@ import streamlit as st
 
 @st.cache_data(show_spinner=False)
 def hide_elements():
+    """Hides the Github icon, Fork repo button, and `Made with Streamlit` footer."""
     hide_footer = """
                 <style>
                     footer {visibility: hidden;} 
@@ -16,6 +17,7 @@ def hide_elements():
 
 @st.cache_data(show_spinner=False)
 def icon_style():
+    """CSS styles for the social icons in the sidebar."""
     icon_style = """           
                 <style>
                     .social-icons {
@@ -75,6 +77,7 @@ def icon_style():
 
 st.cache_data(show_spinner=False)
 def ai_chatbox_style():
+    """Custom CSS styling for the AI message container."""
     css = """
     <style>
         .css-4oy321, .st-emotion-cache-4oy321 {
@@ -93,6 +96,11 @@ def ai_chatbox_style():
 
 st.cache_data(show_spinner=False)
 def user_chatbox_style(**kwargs):
+    """Custom CSS styling for the user message container.
+    
+    Params:
+    - kwargs: css property-vlaue pairs passed as keyword arguments.
+    """
     
     properties = []
 
