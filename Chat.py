@@ -1,8 +1,9 @@
 import utils.agents as agents
-from utils import css
 from utils.prompts import *
+from utils import css
 
 import streamlit as st
+import pandas as pd
 
 from datetime import datetime
 import os, uuid, time, openai, random
@@ -65,6 +66,7 @@ if 'disabled' not in st.session_state:
 # VARIABLES
 TEMPERATURE = 0.1
 df = agents.load_data('reidin_new.csv')
+# df = pd.read_csv('data/Rent_sample_5hk.csv')
 model = 'gpt-4'
 
 llm = ChatOpenAI(temperature=TEMPERATURE,
@@ -297,8 +299,8 @@ for n, msg in enumerate(st.session_state.messages):
 
 # Maximum allowed messages
 max_messages = (
-    11  # Counting both user and assistant messages including the welcome message,
-        # so 10 iterations of conversation
+    61  # Counting both user and assistant messages including the welcome message,
+        # so 30 iterations of conversation
 )
 
 # Display modal and prevent usage after limit hit
