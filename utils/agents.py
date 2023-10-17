@@ -8,7 +8,7 @@ from langchain.tools import GooglePlacesTool
 from langchain.memory import ConversationBufferMemory
 # from langchain.memory import ReadOnlySharedMemory
 from langchain.tools.python.tool import PythonAstREPLTool
-from langchain.agents import ZeroShotAgent, AgentExecutor
+from langchain.agents import ZeroShotAgent, AgentExecutor, load_tools
 # from langchain.agents import Tool
 # from langchain.schema.messages import HumanMessage, AIMessage
 from langchain.memory.chat_message_histories import StreamlitChatMessageHistory
@@ -74,7 +74,7 @@ def create_pandas_dataframe_agent(
         "When using this tool, sometimes output is abbreviated - "
         "import pandas and run `pandas.set_option('display.max_columns',None)` to make sure it does not look abbreviated before using it in your answer."
     )
-    tools = [python_repl_ast, GooglePlacesTool()]
+    tools = [python_repl_ast, GooglePlacesTool()] + load_tools(["openweathermap-api"], llm)
 
     prompt = ZeroShotAgent.create_prompt(
         tools=tools,

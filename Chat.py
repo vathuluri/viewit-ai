@@ -112,6 +112,7 @@ if type(llm) == ChatOpenAI:
 
 
 os.environ["GPLACES_API_KEY"] = st.secrets['gplaces_key']
+os.environ["OPENWEATHERMAP_API_KEY"] = st.secrets['openweather_api_key']
 
 # APP INTERFACE START #
 
