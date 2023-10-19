@@ -65,7 +65,7 @@ if 'disabled' not in st.session_state:
 
 # VARIABLES
 TEMPERATURE = 0.1
-df = agents.load_data('reidin_new.csv')
+# df = agents.load_data('reidin_new.csv')
 # df = pd.read_csv('data/Rent_sample_5hk.csv')
 model = 'gpt-4'
 
@@ -134,12 +134,12 @@ with h2:
     # st.caption("Now in Alpha stage")
 
 # Radio button to switch between data variants
-# data_option = st.radio('Choose data', ['Reidin (original)', 'Reidin (Location-SubLocation swap)'],
-#                        horizontal=True, captions=["reidin_new.csv", "reidin_loc_swap.csv"])
-# if data_option == 'Reidin (original)':
-#     df = load_data('reidin_new.csv')
-# elif data_option == 'Reidin (Location-SubLocation swap)':
-#     df = load_data('reidin_loc_swap.csv')
+data_option = st.radio('Choose data', ['Sales', 'Rental'],
+                       horizontal=True, captions=["reidin_new.csv", "NEW_RENT_3HK.csv"])
+if data_option == 'Sales':
+    df = agents.load_data('reidin_new.csv')
+elif data_option == 'Rental':
+    df = agents.load_data('NEW_RENT_3HK.csv')
 
 
 # AGENT CREATION HAPPENS HERE
