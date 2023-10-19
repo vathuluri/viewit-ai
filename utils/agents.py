@@ -25,8 +25,10 @@ def load_data(filename) -> pd.DataFrame:
         A pandas DataFrame of the data
     """
     df = pd.read_csv(f"data/{filename}")
-    if 'Date' in df.columns:
-        df['Date'] = pd.to_datetime(df['Date'], format="%d-%m-%Y", dayfirst=True)
+    
+    for col_name in df.columns:
+        if 'date' in col_name.lower():
+            df[col_name] = pd.to_datetime(df['Date'], format="%d-%m-%Y", dayfirst=True)
     
     return df
 
