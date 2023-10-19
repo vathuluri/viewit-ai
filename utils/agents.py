@@ -1,5 +1,6 @@
-import pandas as pd
+from utils.prompts import *
 
+import pandas as pd
 import streamlit as st
 
 from langchain.chains.llm import LLMChain
@@ -28,9 +29,19 @@ def load_data(filename) -> pd.DataFrame:
     
     for col_name in df.columns:
         if 'date' in col_name.lower():
-            df[col_name] = pd.to_datetime(df['Date'], format="%d-%m-%Y", dayfirst=True)
+            df[col_name] = pd.to_datetime(df[col_name], dayfirst=True)
     
     return df
+
+
+prefix_map = {
+    'reidin_new.csv': REIDIN_PREFIX,
+    'NEW_RENT_3HK.csv': RENT_PREFIX
+}
+
+@st.cache_data
+def df_prefix(filename):
+    return load_data(filename), prefix_map[filename]
 
 
 # @st.cache_resource

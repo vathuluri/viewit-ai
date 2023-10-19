@@ -133,20 +133,23 @@ with h2:
     st.text("Now in Alpha stage.")
     # st.caption("Now in Alpha stage")
 
+
 # Radio button to switch between data variants
 data_option = st.radio('Choose data', ['Sales', 'Rental'],
                        horizontal=True, captions=["Reidin", "DLD"])
 if data_option == 'Sales':
-    df = agents.load_data('reidin_new.csv')
+    df, PREFIX = agents.df_prefix('reidin_new.csv')
 elif data_option == 'Rental':
-    df = agents.load_data('NEW_RENT_3HK.csv')
+    df, PREFIX = agents.df_prefix('NEW_RENT_3HK.csv')
 
+if 'annual_amount' in df.columns:
+    df = df[df['annual_amount'] >= 1000]
 
 # AGENT CREATION HAPPENS HERE
 agent = agents.create_pandas_dataframe_agent(
     llm=llm,
     df=df,
-    prefix=REIDIN_PREFIX,
+    prefix=PREFIX,
     suffix=SUFFIX,
     format_instructions=FORMAT_INSTRUCTIONS,
     verbose=True,
