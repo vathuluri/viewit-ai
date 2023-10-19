@@ -135,7 +135,7 @@ with h2:
 
 # Radio button to switch between data variants
 data_option = st.radio('Choose data', ['Sales', 'Rental'],
-                       horizontal=True, captions=["reidin_new.csv", "NEW_RENT_3HK.csv"])
+                       horizontal=True, captions=["Reidin", "DLD"])
 if data_option == 'Sales':
     df = agents.load_data('reidin_new.csv')
 elif data_option == 'Rental':
