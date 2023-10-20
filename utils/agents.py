@@ -15,7 +15,7 @@ from langchain.agents import ZeroShotAgent, AgentExecutor, load_tools
 from langchain.memory.chat_message_histories import StreamlitChatMessageHistory
 
 
-@st.cache_data
+# @st.cache_data
 def load_data(filename) -> pd.DataFrame:
     """Loads the csv data that will be used as a knwoledge base for the chatbot
     
