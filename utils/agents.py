@@ -15,7 +15,7 @@ from langchain.agents import ZeroShotAgent, AgentExecutor, load_tools
 from langchain.memory.chat_message_histories import StreamlitChatMessageHistory
 
 
-# @st.cache_data
+@st.cache_data
 def load_data(filename) -> pd.DataFrame:
     """Loads the csv data that will be used as a knwoledge base for the chatbot
     
@@ -27,9 +27,9 @@ def load_data(filename) -> pd.DataFrame:
     """
     df = pd.read_csv(f"data/{filename}")
     
-    for col_name in df.columns:
-        if 'date' in col_name.lower():
-            df[col_name] = pd.to_datetime(df[col_name], dayfirst=True)
+    # for col_name in df.columns:
+    #     if 'date' in col_name.lower():
+    #         df[col_name] = pd.to_datetime(df[col_name], dayfirst=True)
     
     return df
 
@@ -39,7 +39,7 @@ prefix_map = {
     'NEW_RENT_3HK.csv': RENT_PREFIX
 }
 
-# @st.cache_data
+@st.cache_data
 def df_prefix(filename):
     return load_data(filename), prefix_map[filename]
 
