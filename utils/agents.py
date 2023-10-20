@@ -39,7 +39,7 @@ prefix_map = {
     'NEW_RENT_3HK.csv': RENT_PREFIX
 }
 
-@st.cache_data
+# @st.cache_data
 def df_prefix(filename):
     return load_data(filename), prefix_map[filename]
 
