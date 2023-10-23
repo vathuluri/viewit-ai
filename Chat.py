@@ -161,11 +161,12 @@ with st.expander("Show data"):
     # add simple password for data access
     data_container = st.empty()
     data_pwd = data_container.text_input(
-        "Enter password to access data", type='password')
+        "Enter password to access data sample", type='password')
     if data_pwd == "viewitisthebest":
         data_container.empty()
-        st.write(f"Total rows: {len(df)}")
-        st.dataframe(df)
+        st.write(f"Total rows: {len(df):,}")
+        st.write("Rows Displayed: 10,000")
+        st.dataframe(df[:10000])
     elif data_pwd == "":
         pass
     else:
