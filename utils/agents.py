@@ -17,7 +17,7 @@ from langchain.memory.chat_message_histories import StreamlitChatMessageHistory
 
 @st.cache_data
 def load_data(filename) -> pd.DataFrame:
-    """Loads the csv data that will be used as a knwoledge base for the chatbot
+    """Loads the csv data that will be used as a knowledge base for the chatbot
     
     Args:
         filename: The name of the file in the `data` directory
