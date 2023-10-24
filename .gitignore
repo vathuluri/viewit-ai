@@ -9,3 +9,4 @@ chat_history/
 __pycache__/
 *.html
 __init__.py
+notebook_chat.ipynb
