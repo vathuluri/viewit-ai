@@ -11,5 +11,5 @@ streamlit==1.27.2
 streamlit-authenticator
 streamlit-feedback==0.1.2
 tabulate
-trubrics @ git+https://github.com/trubrics/trubrics-sdk@b92d64a618a02fbb1c12dc7f9da7af6cabb1001f
+trubrics==1.6.2
 # ^ install from github as my pull req has not been updated in pypi yet
